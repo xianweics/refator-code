@@ -1,6 +1,81 @@
 # 重构 - 改善既有代码的设计
+### 12.7 移除子类
+
+- 对立：以子类取代类型码
 
 
+- 目的：
+	- 减少系统复杂度
+
+
+- 场景：
+	- 当子类的用处太少时
+	- 当子类简单的情况
+
+
+- 例子：
+	```
+	class Person {
+		get genderCode() {
+			return 'X';
+		}
+	}
+	class Male extends Person {
+		get genderCode() {
+			return 'M';
+		}
+	}
+	class Female extends Person  {
+		get genderCode() {
+			return 'F';
+		}
+	}
+	```
+	```
+	class Person {
+		constructor(genderCode) {
+			this._genderCode = genderCode;
+		}
+		get genderCode() {
+			return this._genderCode;
+		}
+	}
+	```
+
+### 12.8 提取超类
+
+- 目的：
+	- 把重复的行为收拢起来
+
+
+- 场景：
+	- 当多个子类的方法基本一致时
+
+
+- 例子：
+	```
+	class Department {
+		get totalAnnualCost() {}
+		get name() {}
+	}
+	class Employee {
+		get annualCost() {}
+		get name() {}
+		get id() {}
+	}
+	```
+	```
+	class Party {
+		get totalAnnualCost() {}
+		get name() {}
+	}
+	class Department extends Party {
+		get primaryCost() {}
+	}
+	class Employee extends Party {
+		get id() {}
+	}
+	```
 
 
 ### 12.9 折叠继承体系
@@ -18,7 +93,7 @@
 	class Employee {}
 	class Sales extends Employee {}
 	```
-	```
+	```transfer
 	class Employee {}
 	```
 
@@ -33,7 +108,7 @@
 
 
 - 例子
-	``` bad
+	```
 	class Booking {
 		constuctor(show, date) {
 			this._show = show;
@@ -48,7 +123,7 @@
 		}
 	}
 	```
-	``` good
+	``` transfer
 	class Booking {
 		constuctor(show, date) {
 			this._show = show;
@@ -80,11 +155,11 @@
 
 
 - 例子：
-	``` bad
+	``` 
 	class List {}
-	class Stack extend List {}
+	class Stack extends List {}
 	```
-	``` good
+	``` transfer
 	class List {}
 	class Stack {
 		constructor() {
