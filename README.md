@@ -1,5 +1,151 @@
 # 重构 - 改善既有代码的设计
 
+## 10 简化条件逻辑
+
+# 10.1 分解条件表达式
+
+- 目的：简化条件，易于理解代码逻辑
+
+- 场景：当检查处理逻辑复杂时
+
+- 例子：
+	```
+	if(!date.isBefore(plan.summerStart) && !date.isAfter(plan.summerEnd)){
+		charge = quanlity * plan.summerRate;
+	}else{
+		charge = quanlity * plan.regularRate + plan.regularServiceCharge;
+	}
+	```
+	```
+	const isSummer = !date.isBefore(plan.summerStart) && !date.isAfter(plan.summerEnd);
+	function summerCharge(){
+		return quanlity * plan.summerRate;
+	}
+	function regularCharge(){
+		return quanlity * plan.regularRate + plan.regularServiceCharge;
+	}
+	
+	charge = isSummer() ? summerCharge() : regularCharge();
+
+# 10.2 合并条件表达式
+
+- 目的：统一处理条件语句
+
+- 场景：当检查条件各不相同，最终行为一致时
+
+- 例子：
+	```
+	if(age < 18) return 'younger';
+	if(exprience < 5) return 'younger';
+	if(!isPassTest) return 'younger';
+	```
+	```
+	if(isYounger()) return 'younger';
+	function isYounger(){
+		return age<18 || exprience < 5 || !isPassTest
+	}
+	```
+
+# 10.3 卫语句取代嵌套条件表达式
+
+- 目的：减少逻辑的复杂度
+
+- 场景：当出现需要单独检查某个特定条件时
+
+- 例子：
+	```
+	function getPayment(){
+		let result;
+		if(isRead){
+			result = deadAmount();
+		}else{
+			if(isSeparated){
+				result = seperatedAmount();
+			}else{
+				if(isRetired){
+					result = retiredAmount();
+				}else{
+					result = normalAmount();
+				}
+			}
+		}
+	}
+	```
+	```
+	function getPayment(){
+		if(isRead) return deadAmount();
+		if(isSeparated) return seperatedAmount();
+		if(isRetired) return retiredAmount();
+		
+		return normalAmount();
+	}
+	```
+
+# 10.4 以多态取代条件表达式
+
+- 目的：增强扩展性，减少逻辑的复杂度
+
+- 场景：当多个逻辑处理情况
+
+- 例子：
+	```
+	switch(bird.type){
+		case 'EuropeanSwallow':
+			return 'EuropeanSwallow';
+		case 'AfricanSwallow':
+			return 'AfricanSwallow';
+		default:
+			return 'unknown';
+	}
+	```
+	```
+	class EuropeanSwallow{
+		get name(){
+			return 'EuropeanSwallow';
+		}
+	}
+	class AfricanSwallow{
+		get name(){
+			return 'AfricanSwallow';
+		}
+	}
+	```
+
+# 10.5 引入特例
+
+- 目的：提供复用性以及统一性
+
+- 场景：如果某部分逻辑都在检查某个特殊值，并且处理的逻辑也都相同
+
+- 例子：
+	```
+	if(customer === 'unknown'){
+		customerName = 'occupant';
+	}
+	```
+	```
+	class UnknowCustomer{
+		get name(){
+			return 'occupant';
+		}
+	}
+	```
+# 10.6 引入断言
+
+- 目的：保障传入值是可预测的，预习发现测试的BUG
+
+- 例子：
+	```
+	if(this.discountRate){
+		base = base - this.discountRate * base;
+	}
+	```
+	```
+	asset(this.discountRate>0);
+	if(this.discountRate){
+		base = base - this.discountRate * base;
+	}
+	```
 
 ## 11 重构API
 
