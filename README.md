@@ -1,5 +1,113 @@
 # 重构 - 改善既有代码的设计
+
+
 ## 11 重构API
+
+# 11.1 查询函数和修改函数分离
+
+- 目的：减少函数副作用 =》任何有返回值的函数，都要减少它的副作用
+
+- 场景：当函数中又有查询，又有命令
+
+- 例子：
+	```
+	function getTotalOutstadingAndSendBill(person){
+		const result = customer.invoice.reduce((total, each)=>each.amount + total, 0);
+		sendBill();
+		return result;
+	}
+	```
+	```
+	function getTotalOutstading(person){
+		return customer.invoice.reduce((total, each)=>each.amount + total, 0);
+	}
+	function sendBill(){}
+	function handler(){
+		const totalOutstading = getTotalstading();
+		sendBilld();
+	}
+	```
+
+# 11.2 函数参数化
+
+- 目的：增强函数的功能
+
+- 场景：如果发现多个函数逻辑相似，只有某1-2个字面量不同
+
+- 例子：
+	```
+	function tenPercentRaise(person){
+		person.salary = person.salary.multiply(1.1);
+	}
+	function fivePercentRaise(person){
+		person.salary = person.salary.multiply(0.05);
+	}
+	```
+	```
+	function raise(person, factor){
+		person.salary = person.salary.multiply(factor);
+	}
+	```
+
+# 11.3 移除标记参数
+
+- 目的：代码更清晰，减少函数的复杂度
+
+- 场景：如果参数值影响函数内部的控制流
+
+- 例子：
+	```
+	function setDimension(name, value){
+		if(name === 'height'){}
+		if(name === 'width'){}
+	}
+	```
+	```
+	function setHeight(value){
+		this._height = value
+	}
+	function setWidth(value){
+		this._width = value
+	}
+	```
+
+# 11.4 保持对象完整性 
+
+- 目的：缩短参数列表，参数配置灵活
+
+- 场景：如果传入多个参数传值
+
+- 例子：
+	```
+	const{low, high} = temperature;
+	if(isValidTemperature(low,high)){};
+	```
+	```
+	availableVacation(employee);
+	function availableVacation(employee){
+		const{grade} = employee;
+	}
+	```
+
+# 11.5 以查询取代参数 
+
+- 对立：以参数取代查询
+
+- 目的：减少传参，从而减少调用者的成本，保持
+
+- 场景：如果传入多个参数，并且从一个参数推导出另一个参数
+
+- 例子：
+	```
+	availableVacation(employee, employee.grade);
+	function availableVacation(employee,grade){}
+	```
+	```
+	availableVacation(employee);
+	function availableVacation(employee){
+		const{grade} = employee;
+	}
+	```
 
 # 11.6 以参数取代查询
 
@@ -15,7 +123,7 @@
 	targetTemperature(plan)
 	
 	function targetTemperature(plan){
-		const {curTemperature} = weather;
+		const{curTemperature} = weather;
 	}
 	```
 	```
@@ -23,7 +131,7 @@
 	targetTemperature(plan, weather)
 	
 	function targetTemperature(plan, weather){
-		const {curTemperature} = weather;
+		const{curTemperature} = weather;
 	}
 	```
 
@@ -35,14 +143,14 @@
 
 - 例子：
 	```
-	class Person {
-		get id() {}
-		set id(name) {}
+	class Person{
+		get id(){}
+		set id(name){}
 	}
 	```
 	```
-	class Person {
-		get id() {}
+	class Person{
+		get id(){}
 	}
 	```
 	
@@ -70,14 +178,14 @@
 
 - 例子：
 	```
-	function score(candidate, media) {
+	function score(candidate, media){
 		let result = 0;
 		let healthLevel = 0;
 	}
 	function hasPassMedicalExam(){}
 	```
 	```
-	class Scorer {
+	class Scorer{
 		constructor(candidate, medicalExam){
 			this._candidate = candidate;
 			this._medicalExam = medicalExam;
@@ -100,25 +208,25 @@
 
 - 例子：
 	```
-	class ChargeCalculator {
-		constructor(customer, usage) {
+	class ChargeCalculator{
+		constructor(customer, usage){
 			this._customer = customer;
 			this._usage = usage;
 		}
-		execute() { 
+		execute(){ 
 			return this._customer.rate * this._usage;
 		}
 	}
 	```
 	```
-	function charge(customer, usage) {
+	function charge(customer, usage){
 		return customer.rate * usage;
 	}
 	```
 
 ## 12 处理继承关系 
 
-继承体系里上下调整手法：[函数上移](#121-函数上移)、[字段上移](#122-字段上移)、[构造函数本体上移](#123-构造函数本体上移)、[函数下移](#124-函数下移)、[字段下移](#125-字段下移)
+继承体系里上下调整：[函数上移](#121-函数上移)、[字段上移](#122-字段上移)、[构造函数本体上移](#123-构造函数本体上移)、[函数下移](#124-函数下移)、[字段下移](#125-字段下移)
 
 继承体系添加新类或者删除旧类：[移除子类](#127-移除子类)、[提取超类](#128-提取超类)、[折叠继承体系](#129-折叠继承体系)
 
@@ -136,20 +244,20 @@
 
 - 例子：
 	```
-	class Employee {}
-	class Salesman extends Employee {
-		get name() {}
+	class Employee{}
+	class Salesman extends Employee{
+		get name(){}
 	}
-	class Engineer extends Employee {
-		get name() {}
+	class Engineer extends Employee{
+		get name(){}
 	}
 	```
 	```
-	class Employee {
-		get name() {}
+	class Employee{
+		get name(){}
 	}
-	class Salesman extends Employee {}
-	class Engineer extends Employee {}
+	class Salesman extends Employee{}
+	class Engineer extends Employee{}
 	```
 
 ### 12.2 字段上移
@@ -163,32 +271,32 @@
 
 - 例子：
 	```
-	class Party {}
-	class Employee extends Party {
-		constructor(id) {
+	class Party{}
+	class Employee extends Party{
+		constructor(id){
 			this._id = id;
 		}
 	}
-	class Salesman extends Employee {
-		constructor(id) {
+	class Salesman extends Employee{
+		constructor(id){
 			this._id = id;
 			this._name = name;
 		}
 	}
 	```
 	```
-	class Party {
-		constructor(id) {
+	class Party{
+		constructor(id){
 			this._id = id;
 		}
 	}
-	class Employee extends Party {
-		constructor(id) {
+	class Employee extends Party{
+		constructor(id){
 			super(id);
 		}
 	}
-	class Salesman extends Employee {
-		constructor(id) {
+	class Salesman extends Employee{
+		constructor(id){
 			super(id);
 			this._name = name;
 		}
@@ -205,18 +313,18 @@
 
 - 例子：
 	```
-	class Employee {
-		get quota() {}
+	class Employee{
+		get quota(){}
 	}
-	class Salesman extends Employee {}
-	class Engineer extends Employee {}
+	class Salesman extends Employee{}
+	class Engineer extends Employee{}
 	```
 	```
-	class Employee {}
-	class Salesman extends Employee {
-		get quota() {}
+	class Employee{}
+	class Salesman extends Employee{
+		get quota(){}
 	}
-	class Engineer extends Employee {}
+	class Engineer extends Employee{}
 	```
 
 ### 12.5 字段下移
@@ -229,26 +337,26 @@
 
 - 例子：
 	```
-	class Employee {
-		constuctor(quote) {
+	class Employee{
+		constuctor(quote){
 			this._quote = quote;
 		}
 	}
-	class Salesman extends Employee {
-		constuctor(quote) {
+	class Salesman extends Employee{
+		constuctor(quote){
 			super(quote);
 		}
 	}
-	class Engineer extends Employee {}
+	class Engineer extends Employee{}
 	```
 	```
-	class Employee {}
-	class Salesman extends Employee {
-		constuctor(quote) {
+	class Employee{}
+	class Salesman extends Employee{
+		constuctor(quote){
 			this._quote = quote;
 		}
 	}
-	class Engineer extends Employee {}
+	class Engineer extends Employee{}
 	```
 
 ### 12.6 以子类取代类型码
@@ -261,14 +369,14 @@
 
 - 例子：
 	```
-	function createEmployee(name, type) {
+	function createEmployee(name, type){
 		return new Employee(name, type);
 	}
 	```
 	```
-	function createEmployee(name, type) {
-		const employeeTypes = (name) => {
-			return {
+	function createEmployee(name, type){
+		const employeeTypes = (name) =>{
+			return{
 				'engineer': new Engineer(name),
 				'salesman': new Salesman(name)
 			}
@@ -287,28 +395,28 @@
 
 - 例子：
 	```
-	class Person {
-		get genderCode() {
+	class Person{
+		get genderCode(){
 			return 'X';
 		}
 	}
-	class Male extends Person {
-		get genderCode() {
+	class Male extends Person{
+		get genderCode(){
 			return 'M';
 		}
 	}
-	class Female extends Person  {
-		get genderCode() {
+	class Female extends Person {
+		get genderCode(){
 			return 'F';
 		}
 	}
 	```
 	```
-	class Person {
-		constructor(genderCode) {
+	class Person{
+		constructor(genderCode){
 			this._genderCode = genderCode;
 		}
-		get genderCode() {
+		get genderCode(){
 			return this._genderCode;
 		}
 	}
@@ -322,26 +430,26 @@
 
 - 例子：
 	```
-	class Department {
-		get totalAnnualCost() {}
-		get name() {}
+	class Department{
+		get totalAnnualCost(){}
+		get name(){}
 	}
-	class Employee {
-		get annualCost() {}
-		get name() {}
-		get id() {}
+	class Employee{
+		get annualCost(){}
+		get name(){}
+		get id(){}
 	}
 	```
 	```
-	class Party {
-		get totalAnnualCost() {}
-		get name() {}
+	class Party{
+		get totalAnnualCost(){}
+		get name(){}
 	}
-	class Department extends Party {
-		get primaryCost() {}
+	class Department extends Party{
+		get primaryCost(){}
 	}
-	class Employee extends Party {
-		get id() {}
+	class Employee extends Party{
+		get id(){}
 	}
 	```
 
@@ -353,11 +461,11 @@
 
 - 例子：
 	```
-	class Employee {}
-	class Sales extends Employee {}
+	class Employee{}
+	class Sales extends Employee{}
 	```
 	```transfer
-	class Employee {}
+	class Employee{}
 	```
 
 ###  12.10 以委托取代子类
@@ -370,34 +478,34 @@
 
 - 例子
 	```
-	class Booking {
-		constuctor(show, date) {
+	class Booking{
+		constuctor(show, date){
 			this._show = show;
 			this._date = date;
 		}
 	}
 	
-	class PremiumBooking extends Booking {
-		constructor(show, date, extras) {
+	class PremiumBooking extends Booking{
+		constructor(show, date, extras){
 			super(show, date);
 			this._extras = extras;
 		}
 	}
 	```
 	``` transfer
-	class Booking {
-		constuctor(show, date) {
+	class Booking{
+		constuctor(show, date){
 			this._show = show;
 			this._date = date;
 			this._premium = null;
 		}
-		bePremium(extras) {
+		bePremium(extras){
 			this._premium = new PremiumBookingDelegate(this, extras);
 		}
 	}
 	
-	class PremiumBookingDelegate {
-		constructor(root, extras) {
+	class PremiumBookingDelegate{
+		constructor(root, extras){
 			this._root = root;
 			this._extras = extras;
 		}
@@ -412,13 +520,13 @@
 
 - 例子：
 	``` 
-	class List {}
-	class Stack extends List {}
+	class List{}
+	class Stack extends List{}
 	```
 	``` transfer
-	class List {}
-	class Stack {
-		constructor() {
+	class List{}
+	class Stack{
+		constructor(){
 			this._list = new List();
 		}
 	}
