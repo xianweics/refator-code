@@ -1,4 +1,120 @@
 # 重构 - 改善既有代码的设计
+## 11 重构API
+
+# 11.6 以参数取代查询
+
+- 对立：以查询取代参数
+
+- 目的：减少函数的副作用，以及引用关系，保持函数的纯净度
+
+- 场景：如果函数引用了一个全局变量，或者引用想移除的元素
+
+- 例子：
+	```
+	const weather ={};
+	targetTemperature(plan)
+	
+	function targetTemperature(plan){
+		const {curTemperature} = weather;
+	}
+	```
+	```
+	const weather ={};
+	targetTemperature(plan, weather)
+	
+	function targetTemperature(plan, weather){
+		const {curTemperature} = weather;
+	}
+	```
+
+# 11.7 移除设置函数
+
+- 目的：防止某字段被修改
+
+- 场景：当不希望某个字段被修改时
+
+- 例子：
+	```
+	class Person {
+		get id() {}
+		set id(name) {}
+	}
+	```
+	```
+	class Person {
+		get id() {}
+	}
+	```
+	
+# 11.8 以工厂函数取代构造函数
+
+- 目的：增加灵活性
+
+- 场景：不存在继承关系时
+
+- 例子：
+	```
+	const leadEngineer = new Employee('name','E');
+	```
+	```
+	const leadEngineer = createEngineer('name');
+	```
+
+# 11.9 以命令取代函数
+
+- 对立：以函数取代命令
+
+- 目的：命令对象提供更大的灵活性，并且还可以支持撤销、生命周期的管理等附加操作
+
+- 场景：当普通函数无法提供强有力灵活性
+
+- 例子：
+	```
+	function score(candidate, media) {
+		let result = 0;
+		let healthLevel = 0;
+	}
+	function hasPassMedicalExam(){}
+	```
+	```
+	class Scorer {
+		constructor(candidate, medicalExam){
+			this._candidate = candidate;
+			this._medicalExam = medicalExam;
+		}
+		execute(){
+			let result = 0;
+			let healthLevel = 0;
+		}
+		hasPassMedicalExam(){}
+	}
+	```
+
+# 11.10 以函数取代命令
+
+- 对立：以命令取代函数
+
+- 目的：函数简单化
+
+- 场景：大多数情况下，只想调用一个函数，完成自己的工作，不需要函数那么复杂
+
+- 例子：
+	```
+	class ChargeCalculator {
+		constructor(customer, usage) {
+			this._customer = customer;
+			this._usage = usage;
+		}
+		execute() { 
+			return this._customer.rate * this._usage;
+		}
+	}
+	```
+	```
+	function charge(customer, usage) {
+		return customer.rate * usage;
+	}
+	```
 
 ## 12 处理继承关系 
 
