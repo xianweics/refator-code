@@ -274,10 +274,7 @@
 	if(isValidTemperature(low,high)){};
 	```
 	```
-	availableVacation(employee);
-	function availableVacation(employee){
-		const{grade} = employee;
-	}
+	if(isValidTemperature(temperature)){};
 	```
 
 # 11.5 以查询取代参数 
