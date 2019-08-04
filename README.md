@@ -324,7 +324,7 @@
 	}
 	
 	charge = isSummer() ? summerCharge() : regularCharge();
-```
+	```
 # 10.2 合并条件表达式
 
 - 目的：统一处理条件语句
