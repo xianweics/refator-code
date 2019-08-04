@@ -148,12 +148,156 @@
 - 每当收到bug报告，请先写一个单元测试来暴露这个bug
 - 一个测试集是否够好，最好的衡量标准其实是主观的，试问自己：如果有人在代码里引入了一个缺陷，自己有多大的自信它能被测试集发现
 
-# 5 介绍重构名录
+## 5 介绍重构名录
 
-# 6 第一组重构
+## 6 第一组重构
 
-## 6.1 
+### 6.1 提炼函数
 
+- 对立：内联函数
+
+- 目的：将意图与实现分开。意图=》主干；实现=〉分支的实现
+
+- 场景：如果需要花时间浏览一段代码才能弄清它到底干什么，那么就应该将其提炼到一个函数中，并根据它所做的事为其命名。以后再读到这段代码时，可以一眼就能知道函数的用途，大多数根本不需要关心函数如何实现。
+
+- 例子： 
+    ```
+    function printOwing(invoice){
+        printBanner();
+        const outstanding = calculateOutstanding();
+        
+        //print details
+        console.info('name:', invoice.name);
+        console.info('amount:', outstanding);
+    }
+    ```
+    ```
+    function printOwing(invoice){
+        printBanner();
+        const outstanding = calculateOutstanding();
+        printDetails(outstanding, invoice);
+        
+        function printDetails(){
+            console.info('name:', invoice.name);
+            console.info('amount:', outstanding);
+        }
+    }
+    ```
+
+### 6.2 内联函数
+
+- 对立：提炼函数
+
+- 目的：去除不必要间接层/委托层，降低系统复杂度
+
+- 场景：
+    - 一堆不合理的函数，可以将其内联到一个大型函数中，再重新提炼到小函数中
+    - 代码太多间接层，使系统中的所有函数都似乎只是对另一个函数简单的委托
+
+- 例子： 
+    ```
+    function getRating(driver){
+        return moreThanFiveDeliveries(driver) ? 2 : 1;
+    }
+    
+    function moreThanFiveDeliveries(driver){
+        return driver.deliveries > 5;
+    }
+    ```
+    ```
+    function getRating(driver){
+        return driver.deliveries > 5 ? 2 : 1;
+    }
+    ```
+
+### 6.3 提炼变量
+
+- 对立：内联变量
+
+- 目的：去除不必要间接层/委托层，降低系统复杂度
+
+- 场景：
+    - 一堆不合理的函数，可以将其内联到一个大型函数中，再重新提炼到小函数中
+    - 代码太多间接层，使系统中的所有函数都似乎只是对另一个函数简单的委托
+
+- 例子： 
+    ```
+    return order.quantity * order.itemPrice - Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 + Math.min(order.quantity * order.itemPrice * 0.1, 100);
+    ```
+    ```
+    const basePrice = order.quantity * order.itemPrice;
+    const quantityDiscount =  Math.max(0, order.quantity - 500) * order.itemPrice * 0.05;
+    const shipping = Math.min(basePrice * 0.1, 100);
+    return basePrice - quantityDiscount + shipping;
+    ```
+    
+### 6.4 内联变量
+
+- 对立：提炼变量
+
+- 目的：去除不必要变量
+
+- 场景：
+    - 表达式比变量更有表现力
+
+- 例子： 
+    ```
+    const basePrice = order.basePrice;
+    return basePrice > 25;
+    ```
+    ```
+    return order.basePrice > 25;
+    ```
+    
+### 6.5 改变函数声明
+
+- 目的：好名字能让人一眼看出函数的用途，而不必看代码实现
+
+- 使用：
+    - 先写一句注释描述这个函数的用途，再把这句注释变成函数的名字
+
+- 例子： 
+    ```
+    function calc(){}
+    ```
+    ```
+    function calcOrder(){}
+    ```
+    
+### 6.6 封装变量
+
+- 目的：
+    - 重构数据转移为重构函数，更易于处理
+    - 监控数据的变化
+
+- 场景：如果数据的可访问范围大
+
+- 例子：
+    ```
+    let defaultOwner = {};
+    ```
+    ```
+    let defaultOwner = {};
+    export function defaultOwner(){
+        return defaultOwner;
+    }
+    export function getDefaultOwner(arg){
+        defaultOwner = arg;
+    }
+    ```
+
+### 6.7 变量改名
+
+- 目的：好名字可让上下问更清晰
+
+- 例子： 
+    ```
+    const a = height * width;
+    ```
+    ```
+    const area = height * width;
+    ```
+    
 ## 10 简化条件逻辑
 
 # 10.1 分解条件表达式
