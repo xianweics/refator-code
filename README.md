@@ -312,6 +312,95 @@
     ```
     const area = height * width;
     ```
+### 6.8 引入参数对象
+
+- 目的：组织数据结构，让数据项之间的关系更清晰，参数列表也能缩短
+
+- 场景：一个函数接受多个参数
+
+- 例子： 
+    ```
+    function invoice(startDate, endDate){}
+    function received(starDate, endDate){}
+    ```
+    ```
+    function invoice(dateRange){}
+    function received(dateRanges){}
+    ```    
+    
+### 6.9 函数组合成类
+
+- 目的：
+    - 对象内部调用这些函数可以少传参数，从而简化函数调用，而且一个对象可更方便传递给系统的其他部分
+    - 客户端修改对象的核心数据，通过计算得出的派生数据会自动与核心数据保存一致
+    
+- 场景：如果一组函数形影不离地操作同一块数据（通常是将这块数据作为参数传递给函数）
+
+- 例子： 
+    ```
+    function base(reading){}
+    function taxableCharge(reading){}
+    function calcBaseCharge(reading){}
+    ```
+    ```
+    class Reading{
+        base(){}
+        taxableCharge(){}
+        calcBaseCharge(){}
+    }
+    ```        
+    
+    
+### 6.10 函数组合成变换
+
+- 目的：
+    - 增强数据，将数据逻辑统一在一个地方处理
+    - 高内聚
+    
+- 场景：需要把数据放到另一个程序中运行，计算出各种派生信息
+
+- 例子： 
+    ```
+    function base(reading){}
+    function taxableCharge(reading){}
+    ```
+    ```
+    function enrichReading(arg){
+        const reading = _.cloneDeep(arg);
+        reading.baseCharge = base(reading);
+        reading.taxableCharge = taxableCharge(reading)
+        return reading;
+    }
+    ```        
+    
+### 6.11 拆分阶段
+    
+- 目的：保证单一原则，一段代码只做一件事
+
+- 场景：如果一段代码同时处理两件或者更多不同的事情
+
+- 例子：
+    ```
+    const orderArr = orderStr.split(/\s+/);
+    const productPrice = priceList(order[0].split('-')[1]);
+    const orderPrice = parseInt(orderArr[1]) * productPrice;
+    ```
+    ```
+    const orderRecord = parseOrder(order);
+    const orderPrice = price(orderRecord, priceList);
+    
+    function parseOrder(str){
+        const values = str.split(/\s+/);
+        return {
+            priceId: values[0].split('-')[1],
+            quantity: parseInt(values[1]) 
+        }
+    }
+    
+    function price(order, priceList){
+        return order.quantity * priceList[order.productId]
+    }
+    ```
     
 ## 10 简化条件逻辑
 
