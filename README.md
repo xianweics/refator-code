@@ -123,7 +123,7 @@
 - 保持每个测试用例独立性，避免产生共享对象。因为测试之间会通过共享产生交互，而测试的结果就会受测试运行次序的影响，导致测试结果的不确定性
 - 例子
 
-    ```
+    ```javascript
     describe('province', ()=>{
         const shanghai = new Province('shanghai');
         it('shortfall', ()=>{
@@ -132,7 +132,7 @@
     })
     ```
     change to
-    ```
+    ```javascript
     describe('province', ()=>{
         let shanghai = null;
         beforeEach(()=>{
@@ -176,7 +176,7 @@
 - 场景：如果需要花时间浏览一段代码才能弄清它到底干什么，那么就应该将其提炼到一个函数中，并根据它所做的事为其命名。以后再读到这段代码时，可以一眼就能知道函数的用途，大多数根本不需要关心函数如何实现。
 
 - 例子： 
-    ```
+    ```javascript
     function printOwing(invoice){
         printBanner();
         const outstanding = calculateOutstanding();
@@ -186,7 +186,7 @@
         console.info('amount:', outstanding);
     }
     ```
-    ```
+    ```javascript
     function printOwing(invoice){
         printBanner();
         const outstanding = calculateOutstanding();
@@ -210,7 +210,7 @@
     - 代码太多间接层，使系统中的所有函数都似乎只是对另一个函数简单的委托
 
 - 例子： 
-    ```
+    ```javascript
     function getRating(driver){
         return moreThanFiveDeliveries(driver) ? 2 : 1;
     }
@@ -219,7 +219,7 @@
         return driver.deliveries > 5;
     }
     ```
-    ```
+    ```javascript
     function getRating(driver){
         return driver.deliveries > 5 ? 2 : 1;
     }
@@ -236,10 +236,10 @@
     - 代码太多间接层，使系统中的所有函数都似乎只是对另一个函数简单的委托
 
 - 例子： 
-    ```
+    ```javascript
     return order.quantity * order.itemPrice - Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 + Math.min(order.quantity * order.itemPrice * 0.1, 100);
     ```
-    ```
+    ```javascript
     const basePrice = order.quantity * order.itemPrice;
     const quantityDiscount =  Math.max(0, order.quantity - 500) * order.itemPrice * 0.05;
     const shipping = Math.min(basePrice * 0.1, 100);
@@ -253,14 +253,15 @@
 - 目的：去除不必要变量
 
 - 场景：
-    - 表达式比变量更有表现力
-
+  
+- 表达式比变量更有表现力
+  
 - 例子： 
-    ```
+    ```javascript
     const basePrice = order.basePrice;
     return basePrice > 25;
     ```
-    ```
+    ```javascript
     return order.basePrice > 25;
     ```
     
@@ -269,13 +270,14 @@
 - 目的：好名字能让人一眼看出函数的用途，而不必看代码实现
 
 - 使用：
-    - 先写一句注释描述这个函数的用途，再把这句注释变成函数的名字
-
+  
+- 先写一句注释描述这个函数的用途，再把这句注释变成函数的名字
+  
 - 例子： 
-    ```
+    ```javascript
     function calc(){}
     ```
-    ```
+    ```javascript
     function calcOrder(){}
     ```
     
@@ -288,10 +290,10 @@
 - 场景：如果数据的可访问范围大
 
 - 例子：
-    ```
+    ```javascript
     let defaultOwner = {};
     ```
-    ```
+    ```javascript
     let defaultOwner = {};
     export function defaultOwner(){
         return defaultOwner;
@@ -306,10 +308,10 @@
 - 目的：好名字可让上下问更清晰
 
 - 例子： 
-    ```
+    ```javascript
     const a = height * width;
     ```
-    ```
+    ```javascript
     const area = height * width;
     ```
     
@@ -320,14 +322,14 @@
 - 场景：一个函数接受多个参数
 
 - 例子： 
-    ```
+    ```javascript
     function invoice(startDate, endDate){}
     function received(starDate, endDate){}
     ```
-    ```
+    ```javascript
     function invoice(dateRange){}
     function received(dateRanges){}
-    ```    
+    ```
     
 ### 6.9 函数组合成类
 
@@ -338,19 +340,19 @@
 - 场景：如果一组函数形影不离地操作同一块数据（通常是将这块数据作为参数传递给函数）
 
 - 例子： 
-    ```
+    ```javascript
     function base(reading){}
     function taxableCharge(reading){}
     function calcBaseCharge(reading){}
     ```
-    ```
+    ```javascript
     class Reading{
         base(){}
         taxableCharge(){}
         calcBaseCharge(){}
     }
-    ```        
-      
+    ```
+    
 ### 6.10 函数组合成变换
 
 - 目的：
@@ -360,32 +362,32 @@
 - 场景：需要把数据放到另一个程序中运行，计算出各种派生信息
 
 - 例子： 
-    ```
+    ```javascript
     function base(reading){}
     function taxableCharge(reading){}
     ```
-    ```
+    ```javascript
     function enrichReading(arg){
         const reading = _.cloneDeep(arg);
         reading.baseCharge = base(reading);
         reading.taxableCharge = taxableCharge(reading);
         return reading;
     }
-    ```        
+    ```
     
 ### 6.11 拆分阶段
-    
+
 - 目的：保证单一原则，一段代码只做一件事
 
 - 场景：如果一段代码同时处理两件或者更多不同的事情
 
 - 例子：
-    ```
+    ```javascript
     const orderArr = orderStr.split(/\s+/);
     const productPrice = priceList(order[0].split('-')[1]);
     const orderPrice = parseInt(orderArr[1]) * productPrice;
     ```
-    ```
+    ```javascript
     const orderRecord = parseOrder(order);
     const orderPrice = price(orderRecord, priceList);
     
@@ -401,7 +403,137 @@
         return order.quantity * priceList[order.productId];
     }
     ```
+## 8 搬移特性
+
+### 8.1 搬移函数
+
+- 目的：减少对不常用函数的外部依赖，增加常用函数的内部依赖，高内聚
+
+- 场景：如果一个方法频繁调用别处的一个函数，并且被频繁调用的函数在该上下文关系不大时
+
+- 例子：
+    ```javascript
+    class Account{
+        get overdraftCharge(){}
+    }
+    ```
+    ```javascript
+    class AccountType{
+        get overdraftCharge(){}
+    }
+    ```
     
+    > 将内聚放在一个类中，改名。
+    
+    > 变量为名词
+    
+    > 方法为动词
+
+### 8.2 搬移字段
+
+- 目的：高内聚，将不属于当前类的属性搬到另一个类中
+
+- 场景：如果修改一条记录时，总是需要同时改动另一个记录
+
+- 例子：
+  ```javascript
+  class Customer{
+  	get plan(){
+  		return this._plan;
+  	}
+  	get disountRate(){
+  		return this._discountRate;
+  	}
+  }
+  ```
+  ```javascript
+  class Customer{
+  	get plan(){
+  		return this._plan;
+  	}
+  	get disountRate(){
+  		return this.plan.discountRate;
+  	}
+  }
+  ```
+  
+### 8.3 搬移语句到函数
+
+- 对立：[搬移语句到调用者](#83-搬移语句到调用者)
+
+- 目的：消除重复，提取公共内容，即表现一致的行为
+
+- 场景：发现调用某个函数时，总有一些相同的代码也需要每次执行
+
+- 例子：
+	```javascript
+	result.push(`<p>title: ${person.photo.title}</p>`);
+	result.concat(photoData(person.photo));
+	function photoData(photo){
+	  return {
+	    `<p>location: ${photo.location}</p>`;
+	  	`<p>date: ${photo.date}</p>`;
+	  }
+	}
+	```
+	```javascript
+	result.concat(photoData(person.photo));
+	function photoData(photo){
+	  return {
+	    `<p>title: ${person.photo.title}</p>`;
+	    `<p>location: ${photo.location}</p>`;
+	  	`<p>date: ${photo.date}</p>`;
+	  }
+	}
+	```
+	
+### 8.4 搬移语句到调用者
+
+- 对立：[搬移语句到函数](#83-搬移语句到函数)
+
+- 目的：将可变的行为搬移到调用者内部
+
+- 场景：以往多个地方公共的行为，如今需要在某些调用点表现不同的行为，并且调用点与调用者之间的边界差别不大。如果差别较大的，只能重新设计
+
+- 例子：
+	```javascript
+	emitPhotoData(outStream, person.photo);
+	function emitPhotoData(outStream, photo){
+	  outStream.write(`<p>title: ${photo.title}</p>`);
+	  outStream.write(`<p>title: ${photo.location}</p>`);
+	}
+	```
+	
+	```javascript
+	emitPhotoData(outStream, person.photo);
+	outStream.write(`<p>title: ${photo.title}</p>`);
+	function emitPhotoData(outStream, photo){
+	  outStream.write(`<p>title: ${photo.location}</p>`);
+	}
+	```
+	
+### 8.5 以函数调用取代内联代码
+
+- 目的：消除重复
+
+- 场景：如果一些内联代码做的事情是已有函数可以做到的
+
+- 例子：
+	```javascript
+	let hasMa = false;
+	for(const i of states){
+	  if(i === 'MA'){
+	    hasMa = true;
+	  }
+	}
+	```
+	
+	```javascript
+	const hasMa = states.includes('MA');
+	```
+	
+### 8.6 移动语句
+
 ## 9 重新组织数据
 
 ### 9.1 拆分代码
@@ -411,33 +543,33 @@
 - 场景：大多数情况下变量只赋值一次，除了：循环变量（例如：`for(let i =0; i < 5; i++)` 中的`i`），收集结果变量
 
 - 例子：
-    ```
+    ```javascript
     let temp = 2 * (height + width);
     temp = height * width;
     ```
-    ```
+    ```javascript
     const perimeter = 2 * (height * width);
     const area = height * width;
     ```
 
-- 扩展：变量声明可以刚开始声明为`const`，如果发觉需要重复赋值，再改为`let`
+    > 变量声明可以刚开始声明为`const`，如果发觉需要重复赋值，再改为`let`
 
 ### 9.2 字段改名
 
 - 目的：好的名字可以帮助阅读者更易理解
 
 - 例子：
-    ```
+    ```javascript
     class Organization{
         get name(){}
     }
     ```
-    ```
+    ```javascript
     class Organization{
         get title(){}
     }
     ```
-        
+    
 ### 9.3 以查询取代派生变量
 
 - 目的：减少方法中的副作用，单一原则
@@ -445,7 +577,7 @@
 - 场景：对数据的修改常常导致代码的各个部分以丑陋的形式互相耦合：在一处修改数据，却在另一处造成难以发现的破坏
 
 - 例子：
-    ```
+    ```javascript
     get discountTotal(){
         return this._discountTotal;
     }
@@ -455,7 +587,7 @@
         this._discountTotal += old - number;
     }
     ```
-    ```
+    ```javascript
     get discountTotal(){
         return this._baseTotal - this._discount;
     }
@@ -463,7 +595,7 @@
         this._discount = number;
     }
     ```
-         
+    
 ### 9.4 将引用对象改为值对象
 
 - 对立：[将值对象改为引用对象](#94-将值对象改为引用对象)
@@ -473,14 +605,14 @@
 - 场景：如果不需要改变值的引用关系，每个值是不可变的
 
 - 例子：
-    ```
+    ```javascript
     class Product{
         applyDiscount(arg){
             this._price -= arg;
         }
     }
     ```
-    ```
+    ```javascript
     class Product{
         applyDiscount(arg){
             this._price = new Money(this._price.amount - arg, this._price.currency);
@@ -495,10 +627,10 @@
 - 场景：如果数据结构中包含多个记录，而这些记录都有关联到同一个逻辑的数据结构，例如一个数据的改动，需要共享到整个数据集
 
 - 例子：
-    ```
+    ```javascript
     let customer = new Customer(customerData);
     ```
-    ```
+    ```javascript
     let customer = customerRepository.get(customerData, id);
     ```
     
@@ -511,14 +643,14 @@
 - 场景：当检查处理逻辑复杂时
 
 - 例子：
-	```
+	```javascript
 	if(!date.isBefore(plan.summerStart) && !date.isAfter(plan.summerEnd)){
 		charge = quantity * plan.summerRate;
 	}else{
 		charge = quantity * plan.regularRate + plan.regularServiceCharge;
 	}
 	```
-	```
+	```javascript
 	const isSummer = !date.isBefore(plan.summerStart) && !date.isAfter(plan.summerEnd);
 	function summerCharge(){
 		return quantity * plan.summerRate;
@@ -537,12 +669,12 @@
 - 场景：当检查条件各不相同，最终行为一致时
 
 - 例子：
-	```
+	```javascript
 	if(age < 18) return 'younger';
 	if(experience < 5) return 'younger';
 	if(!isPassTest) return 'younger';
 	```
-	```
+	```javascript
 	if(isYounger()) return 'younger';
 	function isYounger(){
 		return age<18 || experience < 5 || !isPassTest;
@@ -556,7 +688,7 @@
 - 场景：当出现需要单独检查某个特定条件时
 
 - 例子：
-	```
+	```javascript
 	function getPayment(){
 		let result;
 		if(isRead){
@@ -574,7 +706,7 @@
 		}
 	}
 	```
-	```
+	```javascript
 	function getPayment(){
 		if(isRead) return deadAmount();
 		if(isSeparated) return separatedAmount();
@@ -591,7 +723,7 @@
 - 场景：当多个逻辑处理情况
 
 - 例子：
-	```
+	```javascript
 	switch(bird.type){
 		case 'EuropeanSwallow':
 			return 'EuropeanSwallow';
@@ -601,7 +733,7 @@
 			return 'unknown';
 	}
 	```
-	```
+	```javascript
 	class EuropeanSwallow{
 		get name(){
 			return 'EuropeanSwallow';
@@ -621,12 +753,12 @@
 - 场景：如果某部分逻辑都在检查某个特殊值，并且处理的逻辑也都相同
 
 - 例子：
-	```
+	```javascript
 	if(customer === 'unknown'){
 		customerName = 'occupant';
 	}
 	```
-	```
+	```javascript
 	class UnknownCustomer{
 		get name(){
 			return 'occupant';
@@ -639,12 +771,12 @@
 - 目的：保障传入值是可预测的，预习发现测试的BUG
 
 - 例子：
-	```
+	```javascript
 	if(this.discountRate){
 		base = base - this.discountRate * base;
 	}
 	```
-	```
+	```javascript
 	asset(this.discountRate>0);
 	if(this.discountRate){
 		base = base - this.discountRate * base;
@@ -660,14 +792,14 @@
 - 场景：当函数中又有查询，又有命令
 
 - 例子：
-	```
+	```javascript
 	function getTotalOutStandingAndSendBill(person){
 		const result = customer.invoice.reduce((total, each)=>each.amount + total, 0);
 		sendBill();
 		return result;
 	}
 	```
-	```
+	```javascript
 	function getTotalStanding(person){
 		return customer.invoice.reduce((total, each)=>each.amount + total, 0);
 	}
@@ -685,7 +817,7 @@
 - 场景：如果发现多个函数逻辑相似，只有某1-2个字面量不同
 
 - 例子：
-	```
+	```javascript
 	function tenPercentRaise(person){
 		person.salary = person.salary.multiply(1.1);
 	}
@@ -693,7 +825,7 @@
 		person.salary = person.salary.multiply(0.05);
 	}
 	```
-	```
+	```javascript
 	function raise(person, factor){
 		person.salary = person.salary.multiply(factor);
 	}
@@ -706,13 +838,13 @@
 - 场景：如果参数值影响函数内部的控制流
 
 - 例子：
-	```
+	```javascript
 	function setDimension(name, value){
 		if(name === 'height'){}
 		if(name === 'width'){}
 	}
 	```
-	```
+	```javascript
 	function setHeight(value){
 		this._height = value;
 	}
@@ -728,11 +860,11 @@
 - 场景：如果传入多个参数传值
 
 - 例子：
-	```
+	```javascript
 	const{low, high} = temperature;
 	if(isValidTemperature(low, high)){};
 	```
-	```
+	```javascript
 	if(isValidTemperature(temperature)){};
 	```
 
@@ -745,11 +877,11 @@
 - 场景：如果传入多个参数，并且从一个参数推导出另一个参数
 
 - 例子：
-	```
+	```javascript
 	availableVacation(employee, employee.grade);
 	function availableVacation(employee, grade){}
 	```
-	```
+	```javascript
 	availableVacation(employee);
 	function availableVacation(employee){
 		const {grade} = employee;
@@ -765,7 +897,7 @@
 - 场景：如果函数引用了一个全局变量，或者引用想移除的元素
 
 - 例子：
-	```
+	```javascript
 	const weather ={};
 	targetTemperature(plan);
 	
@@ -773,7 +905,7 @@
 		const{curTemperature} = weather;
 	}
 	```
-	```
+	```javascript
 	const weather ={};
 	targetTemperature(plan, weather);
 	
@@ -789,13 +921,13 @@
 - 场景：当不希望某个字段被修改时
 
 - 例子：
-	```
+	```javascript
 	class Person{
 		get id(){}
 		set id(name){}
 	}
 	```
-	```
+	```javascript
 	class Person{
 		get id(){}
 	}
@@ -808,10 +940,10 @@
 - 场景：不存在继承关系时
 
 - 例子：
-	```
+	```javascript
 	const leadEngineer = new Employee('name','E');
 	```
-	```
+	```javascript
 	const leadEngineer = createEngineer('name');
 	```
 
@@ -824,14 +956,14 @@
 - 场景：当普通函数无法提供强有力灵活性
 
 - 例子：
-	```
+	```javascript
 	function score(candidate, media){
 		let result = 0;
 		let healthLevel = 0;
 	}
 	function hasPassMedicalExam(){}
 	```
-	```
+	```javascript
 	class Scorer{
 		constructor(candidate, medicalExam){
 			this._candidate = candidate;
@@ -854,7 +986,7 @@
 - 场景：大多数情况下，只想调用一个函数，完成自己的工作，不需要函数那么复杂
 
 - 例子：
-	```
+	```javascript
 	class ChargeCalculator{
 		constructor(customer, usage){
 			this._customer = customer;
@@ -865,7 +997,7 @@
 		}
 	}
 	```
-	```
+	```javascript
 	function charge(customer, usage){
 		return customer.rate * usage;
 	}
@@ -890,7 +1022,7 @@
 - 场景：当函数被大部分部分子类用到时
 
 - 例子：
-	```
+	```javascript
 	class Employee{}
 	class Salesman extends Employee{
 		get name(){}
@@ -899,7 +1031,7 @@
 		get name(){}
 	}
 	```
-	```
+	```javascript
 	class Employee{
 		get name(){}
 	}
@@ -917,7 +1049,7 @@
 - 场景：当多个子类有公共字段
 
 - 例子：
-	```
+	```javascript
 	class Party{}
 	class Employee extends Party{
 		constructor(id){
@@ -931,7 +1063,7 @@
 		}
 	}
 	```
-	```
+	```javascript
 	class Party{
 		constructor(id){
 			this._id = id;
@@ -959,14 +1091,14 @@
 - 场景：当函数被小部分子类用到时
 
 - 例子：
-	```
+	```javascript
 	class Employee{
 		get quota(){}
 	}
 	class Salesman extends Employee{}
 	class Engineer extends Employee{}
 	```
-	```
+	```javascript
 	class Employee{}
 	class Salesman extends Employee{
 		get quota(){}
@@ -983,7 +1115,7 @@
 - 场景：当字段被小部分子类用到时
 
 - 例子：
-	```
+	```javascript
 	class Employee{
 		constructor(quote){
 			this._quote = quote;
@@ -996,7 +1128,7 @@
 	}
 	class Engineer extends Employee{}
 	```
-	```
+	```javascript
 	class Employee{}
 	class Salesman extends Employee{
 		constructor(quote){
@@ -1015,12 +1147,12 @@
 - 场景：当不同的状态码表现不同的行为时
 
 - 例子：
-	```
+	```javascript
 	function createEmployee(name, type){
 		return new Employee(name, type);
 	}
 	```
-	```
+	```javascript
 	function createEmployee(name, type){
 		const employeeTypes = (name) =>{
 			return{
@@ -1041,7 +1173,7 @@
 - 场景：当子类的用处太少时，当子类简单
 
 - 例子：
-	```
+	```javascript
 	class Person{
 		get genderCode(){
 			return 'X';
@@ -1058,7 +1190,7 @@
 		}
 	}
 	```
-	```
+	```javascript
 	class Person{
 		constructor(genderCode){
 			this._genderCode = genderCode;
@@ -1076,7 +1208,7 @@
 - 场景：当多个子类的方法基本一致时
 
 - 例子：
-	```
+	```javascript
 	class Department{
 		get totalAnnualCost(){}
 		get name(){}
@@ -1087,7 +1219,7 @@
 		get id(){}
 	}
 	```
-	```
+	```javascript
 	class Party{
 		get totalAnnualCost(){}
 		get name(){}
@@ -1107,11 +1239,11 @@
 - 场景：当超类与子类没有多大差别
 
 - 例子：
-	```
+	```javascript
 	class Employee{}
 	class Sales extends Employee{}
 	```
-	```
+	```javascript
 	class Employee{}
 	```
 
@@ -1122,7 +1254,7 @@
 - 场景：当子类可能存在多种类型上的变化
 
 - 例子
-	```
+	```javascript
 	class Booking{
 		constructor(show, date){
 			this._show = show;
@@ -1137,7 +1269,7 @@
 		}
 	}
 	```
-	```
+	```javascript
 	class Booking{
 		constructor(show, date){
 			this._show = show;
@@ -1164,11 +1296,11 @@
 - 场景：当超类的部分方法不适用于子类，不清晰的继承关系
 
 - 例子：
-	``` 
+	``` javascript
 	class List{}
 	class Stack extends List{}
 	```
-	```
+	```javascript
 	class List{}
 	class Stack{
 		constructor(){
@@ -1177,5 +1309,5 @@
 	}
 	```
     > 超类的所有方法都适用于子类，子类的所有实例都是超类的实例 => 使用继承尽量使用继承
-    
+  
     > 如果发现继承有问题（扩展困难），再使用[以委托取代超类](#1211-以委托取代超类)
