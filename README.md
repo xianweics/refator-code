@@ -12,7 +12,7 @@
 
 ### 2.1 何谓重构
 
-- 重构：对软件内部结构的一种调整，目的是在*不改变可观察行为的前提下*，提高其可理解性，降低其修改成本。
+- 重构：对软件内部结构的一种调整，目的是在***不改变可观察行为的前提下***，提高其可理解性，降低其修改成本。
 - 重构的关键在于运用大量小且保证软件行为的步骤，一步步达到大规模的修改。
 - 如果有人说他们的代码在重构过程中有1-2天时间不可用，基本上可以确定，他们在做的事不是重构。
 
@@ -169,7 +169,7 @@
 
 ### 6.1 提炼函数
 
-- 对立：内联函数
+- 对立：[内联函数](#62内联函数)
 
 - 目的：将意图与实现分开。意图=》主干；实现=〉分支的实现
 
@@ -201,7 +201,7 @@
 
 ### 6.2 内联函数
 
-- 对立：提炼函数
+- 对立：[提炼函数](#61-提炼函数)
 
 - 目的：去除不必要间接层/委托层，降低系统复杂度
 
@@ -227,7 +227,7 @@
 
 ### 6.3 提炼变量
 
-- 对立：内联变量
+- 对立：[内联变量](#64-内联变量)
 
 - 目的：去除不必要间接层/委托层，降低系统复杂度
 
@@ -248,7 +248,7 @@
     
 ### 6.4 内联变量
 
-- 对立：提炼变量
+- 对立：[提炼变量](#63-提炼变量)
 
 - 目的：去除不必要变量
 
@@ -312,6 +312,7 @@
     ```
     const area = height * width;
     ```
+    
 ### 6.8 引入参数对象
 
 - 目的：组织数据结构，让数据项之间的关系更清晰，参数列表也能缩短
@@ -349,8 +350,7 @@
         calcBaseCharge(){}
     }
     ```        
-    
-    
+      
 ### 6.10 函数组合成变换
 
 - 目的：
@@ -368,7 +368,7 @@
     function enrichReading(arg){
         const reading = _.cloneDeep(arg);
         reading.baseCharge = base(reading);
-        reading.taxableCharge = taxableCharge(reading)
+        reading.taxableCharge = taxableCharge(reading);
         return reading;
     }
     ```        
@@ -394,12 +394,112 @@
         return {
             priceId: values[0].split('-')[1],
             quantity: parseInt(values[1]) 
-        }
+        };
     }
     
     function price(order, priceList){
-        return order.quantity * priceList[order.productId]
+        return order.quantity * priceList[order.productId];
     }
+    ```
+    
+## 9 重新组织数据
+
+### 9.1 拆分代码
+
+- 目的：每个变量只承担一个责任，同一个变量承担两件不同的事情，会令代码阅读者糊涂
+
+- 场景：大多数情况下变量只赋值一次，除了：循环变量（例如：`for(let i =0; i < 5; i++)` 中的`i`），收集结果变量
+
+- 例子：
+    ```
+    let temp = 2 * (height + width);
+    temp = height * width;
+    ```
+    ```
+    const perimeter = 2 * (height * width);
+    const area = height * width;
+    ```
+
+- 扩展：变量声明可以刚开始声明为`const`，如果发觉需要重复赋值，再改为`let`
+
+### 9.2 字段改名
+
+- 目的：好的名字可以帮助阅读者更易理解
+
+- 例子：
+    ```
+    class Organization{
+        get name(){}
+    }
+    ```
+    ```
+    class Organization{
+        get title(){}
+    }
+    ```
+        
+### 9.3 以查询取代派生变量
+
+- 目的：减少方法中的副作用，单一原则
+
+- 场景：对数据的修改常常导致代码的各个部分以丑陋的形式互相耦合：在一处修改数据，却在另一处造成难以发现的破坏
+
+- 例子：
+    ```
+    get discountTotal(){
+        return this._discountTotal;
+    }
+    get discount(number){
+        const old = this._discount;
+        this._discount = number;
+        this._discountTotal += old - number;
+    }
+    ```
+    ```
+    get discountTotal(){
+        return this._baseTotal - this._discount;
+    }
+    get discount(number){
+        this._discount = number;
+    }
+    ```
+         
+### 9.4 将引用对象改为值对象
+
+- 对立：[将值对象改为引用对象](#94-将值对象改为引用对象)
+
+- 目的：值对象的不可变性处理起来更容易，可以任意的传递，防止被外部修改
+
+- 场景：如果不需要改变值的引用关系，每个值是不可变的
+
+- 例子：
+    ```
+    class Product{
+        applyDiscount(arg){
+            this._price -= arg;
+        }
+    }
+    ```
+    ```
+    class Product{
+        applyDiscount(arg){
+            this._price = new Money(this._price.amount - arg, this._price.currency);
+        }
+    }
+    ```
+    
+### 9.5 将值对象改为引用对象
+
+- 目的：保持数据共享
+
+- 场景：如果数据结构中包含多个记录，而这些记录都有关联到同一个逻辑的数据结构，例如一个数据的改动，需要共享到整个数据集
+
+- 例子：
+    ```
+    let customer = new Customer(customerData);
+    ```
+    ```
+    let customer = customerRepository.get(customerData, id);
     ```
     
 ## 10 简化条件逻辑
@@ -413,22 +513,23 @@
 - 例子：
 	```
 	if(!date.isBefore(plan.summerStart) && !date.isAfter(plan.summerEnd)){
-		charge = quanlity * plan.summerRate;
+		charge = quantity * plan.summerRate;
 	}else{
-		charge = quanlity * plan.regularRate + plan.regularServiceCharge;
+		charge = quantity * plan.regularRate + plan.regularServiceCharge;
 	}
 	```
 	```
 	const isSummer = !date.isBefore(plan.summerStart) && !date.isAfter(plan.summerEnd);
 	function summerCharge(){
-		return quanlity * plan.summerRate;
+		return quantity * plan.summerRate;
 	}
 	function regularCharge(){
-		return quanlity * plan.regularRate + plan.regularServiceCharge;
+		return quantity * plan.regularRate + plan.regularServiceCharge;
 	}
 	
 	charge = isSummer() ? summerCharge() : regularCharge();
 	```
+	
 ### 10.2 合并条件表达式
 
 - 目的：统一处理条件语句
@@ -438,13 +539,13 @@
 - 例子：
 	```
 	if(age < 18) return 'younger';
-	if(exprience < 5) return 'younger';
+	if(experience < 5) return 'younger';
 	if(!isPassTest) return 'younger';
 	```
 	```
 	if(isYounger()) return 'younger';
 	function isYounger(){
-		return age<18 || exprience < 5 || !isPassTest
+		return age<18 || experience < 5 || !isPassTest;
 	}
 	```
 
@@ -462,7 +563,7 @@
 			result = deadAmount();
 		}else{
 			if(isSeparated){
-				result = seperatedAmount();
+				result = separatedAmount();
 			}else{
 				if(isRetired){
 					result = retiredAmount();
@@ -476,7 +577,7 @@
 	```
 	function getPayment(){
 		if(isRead) return deadAmount();
-		if(isSeparated) return seperatedAmount();
+		if(isSeparated) return separatedAmount();
 		if(isRetired) return retiredAmount();
 		
 		return normalAmount();
@@ -526,12 +627,13 @@
 	}
 	```
 	```
-	class UnknowCustomer{
+	class UnknownCustomer{
 		get name(){
 			return 'occupant';
 		}
 	}
 	```
+	
 ### 10.6 引入断言
 
 - 目的：保障传入值是可预测的，预习发现测试的BUG
@@ -559,20 +661,20 @@
 
 - 例子：
 	```
-	function getTotalOutstadingAndSendBill(person){
+	function getTotalOutStandingAndSendBill(person){
 		const result = customer.invoice.reduce((total, each)=>each.amount + total, 0);
 		sendBill();
 		return result;
 	}
 	```
 	```
-	function getTotalOutstading(person){
+	function getTotalStanding(person){
 		return customer.invoice.reduce((total, each)=>each.amount + total, 0);
 	}
 	function sendBill(){}
 	function handler(){
-		const totalOutstading = getTotalstading();
-		sendBilld();
+		const totalOutstanding = getTotalStanding();
+		sendBill();
 	}
 	```
 
@@ -612,10 +714,10 @@
 	```
 	```
 	function setHeight(value){
-		this._height = value
+		this._height = value;
 	}
 	function setWidth(value){
-		this._width = value
+		this._width = value;
 	}
 	```
 
@@ -628,7 +730,7 @@
 - 例子：
 	```
 	const{low, high} = temperature;
-	if(isValidTemperature(low,high)){};
+	if(isValidTemperature(low, high)){};
 	```
 	```
 	if(isValidTemperature(temperature)){};
@@ -636,7 +738,7 @@
 
 ### 11.5 以查询取代参数 
 
-- 对立：以参数取代查询
+- 对立：[以参数取代查询](#116-以参数取代查询)
 
 - 目的：减少传参，从而减少调用者的成本，保持
 
@@ -645,18 +747,18 @@
 - 例子：
 	```
 	availableVacation(employee, employee.grade);
-	function availableVacation(employee,grade){}
+	function availableVacation(employee, grade){}
 	```
 	```
 	availableVacation(employee);
 	function availableVacation(employee){
-		const{grade} = employee;
+		const {grade} = employee;
 	}
 	```
 
 ### 11.6 以参数取代查询
 
-- 对立：以查询取代参数
+- 对立：[以查询取代参数](#115-以查询取代参数)
 
 - 目的：减少函数的副作用，以及引用关系，保持函数的纯净度
 
@@ -665,7 +767,7 @@
 - 例子：
 	```
 	const weather ={};
-	targetTemperature(plan)
+	targetTemperature(plan);
 	
 	function targetTemperature(plan){
 		const{curTemperature} = weather;
@@ -673,7 +775,7 @@
 	```
 	```
 	const weather ={};
-	targetTemperature(plan, weather)
+	targetTemperature(plan, weather);
 	
 	function targetTemperature(plan, weather){
 		const{curTemperature} = weather;
@@ -715,7 +817,7 @@
 
 ### 11.9 以命令取代函数
 
-- 对立：以函数取代命令
+- 对立：[以函数取代命令](#1110-以函数取代命令)
 
 - 目的：命令对象提供更大的灵活性，并且还可以支持撤销、生命周期的管理等附加操作
 
@@ -745,7 +847,7 @@
 
 ### 11.10 以函数取代命令
 
-- 对立：以命令取代函数
+- 对立：[以命令取代函数](#119-以命令取代函数)
 
 - 目的：函数简单化
 
@@ -781,7 +883,7 @@
 
 ### 12.1 函数上移
 
-- 对立：函数下移
+- 对立：[函数下移](#124-函数下移)
 
 - 目的：提高复用性，减少重复
 
@@ -850,7 +952,7 @@
 
 ### 12.4 函数下移
 
-- 对立：函数上移
+- 对立：[函数上移](#122-字段上移)
 
 - 目的：内聚子类的方法
 
@@ -874,7 +976,7 @@
 
 ### 12.5 字段下移
 
-- 对立：字段上移
+- 对立：[字段上移](#122-字段上移)
 
 - 目的：内聚子类的字段
 
@@ -883,12 +985,12 @@
 - 例子：
 	```
 	class Employee{
-		constuctor(quote){
+		constructor(quote){
 			this._quote = quote;
 		}
 	}
 	class Salesman extends Employee{
-		constuctor(quote){
+		constructor(quote){
 			super(quote);
 		}
 	}
@@ -897,7 +999,7 @@
 	```
 	class Employee{}
 	class Salesman extends Employee{
-		constuctor(quote){
+		constructor(quote){
 			this._quote = quote;
 		}
 	}
@@ -906,7 +1008,7 @@
 
 ### 12.6 以子类取代类型码
 
-- 对立：移除子类
+- 对立：[移除子类](#127-移除子类)
 
 - 目的：更明确地表达数据与类型之间的关系，增强子类的扩展性
 
@@ -932,7 +1034,7 @@
 
 ### 12.7 移除子类
 
-- 对立：以子类取代类型码
+- 对立：[以子类取代类型码](#126-以子类取代类型码)
 
 - 目的：减少系统复杂度
 
@@ -1009,7 +1111,7 @@
 	class Employee{}
 	class Sales extends Employee{}
 	```
-	```transfer
+	```
 	class Employee{}
 	```
 
@@ -1017,14 +1119,12 @@
 
 - 目的：增强类的扩展性
 
-
 - 场景：当子类可能存在多种类型上的变化
-
 
 - 例子
 	```
 	class Booking{
-		constuctor(show, date){
+		constructor(show, date){
 			this._show = show;
 			this._date = date;
 		}
@@ -1037,9 +1137,9 @@
 		}
 	}
 	```
-	``` transfer
+	```
 	class Booking{
-		constuctor(show, date){
+		constructor(show, date){
 			this._show = show;
 			this._date = date;
 			this._premium = null;
@@ -1068,7 +1168,7 @@
 	class List{}
 	class Stack extends List{}
 	```
-	``` transfer
+	```
 	class List{}
 	class Stack{
 		constructor(){
@@ -1076,6 +1176,6 @@
 		}
 	}
 	```
-> 超类的所有方法都适用于子类，子类的所有实例都是超类的实例 => 使用继承尽量使用继承
-
-> 如果发现继承有问题（扩展困难），再使用[以委托取代超类](#1211-以委托取代超类)
+    > 超类的所有方法都适用于子类，子类的所有实例都是超类的实例 => 使用继承尽量使用继承
+    
+    > 如果发现继承有问题（扩展困难），再使用[以委托取代超类](#1211-以委托取代超类)
