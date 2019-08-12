@@ -403,6 +403,265 @@
         return order.quantity * priceList[order.productId];
     }
     ```
+
+## 7 封装
+
+### 7.1 封装记录
+
+- 目的：
+	- 对象可以隐藏结构的细节
+	- 有助于字段改名
+
+- 场景：对于可变数据
+
+- 例子：
+
+  ```javascript
+  const organization = {name: 'John', country: 'GB'};
+  ```
+
+  ```javascript
+  class Organization{
+    constructor(data){
+      this._name = data.name;
+      this._country = data.country;
+    }
+    get name(){
+      return this._name;
+    }
+    set name(arg){
+      this._name = arg;
+    }
+    get country(){
+      return this._country;
+    }
+    set country(arg){
+      this._country = arg;
+    }
+  }
+  ```
+
+### 7.2 封装集合
+
+- 目的：控制外界对类中集合的访问权，避免集合被直接修改
+
+- 场景：类中集合为可变数据
+
+- 例子：
+	```javascript
+	class Person{
+	  get courses(){
+	    return this._courses;
+	  }
+	  set courses(list){
+	    this._course = list;
+	  }
+	}
+	```
+	```javascript
+	class Person{{
+	  get course(){
+	    return this._courses.slice();
+	  }
+	  addCourse(course){}
+	  removeCourse(course){}
+	}
+	```
+
+### 7.3 以对象取代基本类型
+
+- 目的：扩展或者增强数据的行为
+
+- 场景：如果数据项需要更多的含义或者行为时
+
+- 例子：
+	```javascript
+	orders.filter(o => 'high' === o.priority || 'rush' === o.priority);
+	```
+	```javascript
+	orders.filter(o => o.priority.higherThan(new Priority('normal')));
+	```
+	
+### 7.4 以查询取代临时变量
+
+- 目的：
+  - 新函数与原函数之间的边界更清晰
+  - 便于代码抽离
+  - 利于函数复用
+
+- 场景：那些值被计算一次且之后不再被修改的变量
+
+- 例子：
+  ```javascript
+  const basePrice = this._quantity * this._itemPrice;
+  if(basePrice > 1000){
+    return basePrice * 0.95;
+  }else{
+    return basePrice * 0.98;
+  }
+  ```
+  ```javascript
+  get basePrice(){ 
+    this._quantity * this._itemPrice;
+  }
+  if(this.basePrice > 1000){
+    return this.basePrice * 0.95;
+  }else{
+    return this.basePrice * 0.98;
+  }
+  ```
+
+
+### 7.5 提取类
+
+- 对立：[内联类](#76-内联类)
+
+- 目的：将大类分成小类
+
+- 场景：如果维护一个大量函数和数据的类
+
+- 例子：
+	```javascript
+	class Person{
+		get officeAreaCode(){
+			return this._officeAreaCode;
+		}
+		get officeNumber(){
+			return this._officeNumber;
+		}
+	}
+	```
+	```javascript
+	class Person{
+		get officeAreaCode(){
+			return this._telephoneNumber.areaCode;
+		}
+		get officeNumber(){
+			return this._telephoneNumber.number;
+		}
+	}
+	class TelephoneNumber{
+	  get areaCode(){
+	    return this._areaCode;
+	  }
+	  get number(){
+	    return this._number;
+	  }
+	}
+	```
+	
+### 7.6 内联类
+
+- 对立：[提炼类](#75-提炼类)
+
+- 目的：减少不必要的类
+
+- 场景：
+	- 如果一个类不再承担足够的责任
+	- 重新分类两个类的不同职责
+
+- 例子：
+	```javascript
+	class Person{
+		get officeAreaCode(){
+			return this._telephoneNumber.areaCode;
+		}
+		get officeNumber(){
+			return this._telephoneNumber.number;
+		}
+	}
+	class TelephoneNumber{
+	  get areaCode(){
+	    return this._areaCode;
+	  }
+	  get number(){
+	    return this._number;
+	  }
+	}
+	```
+	```javascript
+	class Person{
+		get officeAreaCode(){
+			return this._officeAreaCode;
+		}
+		get officeNumber(){
+			return this._officeNumber;
+		}
+	}
+	```
+	
+### 7.7 隐藏委托关系
+
+- 对立：[移除中间人](#78-移除中间人)
+
+- 目的：每个模块尽可能减少了解系统的其他部分，把部分依赖关系隐藏起来，减少调用者双方了解更多细节
+
+- 场景：如果被调方接口频繁修改时
+
+- 例子：
+	```javascript
+	const manager = person.department.manager;
+	```
+	```javascript
+	const manager = person.manager;
+	class Person{
+	  get manager(){
+	    return this.department.manager;
+	  }
+	}
+	```
+	
+### 7.8 移除中间人
+
+- 对立：[隐藏委托关系](#77-隐藏委托关系)
+
+- 目的：减少不不必要的委托
+
+- 场景：如果过多的转发函数没有让程序本身提升的扩展性，就应删除部分委托
+
+- 例子：
+	```javascript
+	const manager = person.manager;
+	class Person{
+	  get manager(){
+	    return this.department.manager;
+	  }
+	}
+	```
+	```javascript
+	const manager = person.department.manager;
+	```
+	
+### 7.9 替换算法
+
+- 目的：用简单算法处理
+
+- 场景：随着对业务不断深入，发觉有更简单的算法实现
+
+- 例子：
+	```javascript
+	function foundPerson(people){
+	  for(let i = 0; i < people.length; i++){
+	    if(people[i] === 'John'){
+	      return 'John';
+	    }
+	    if(people[i] === 'Maria'){
+	      return 'Maria';
+	    }
+	     if(people[i] === 'Mike'){
+	      return 'Mike';
+	    }
+	  }
+	  return '';
+	}
+	```
+	```javascript
+	function foundPerson(people){
+		const candidate = ['John', 'Maria', 'Mike'];
+	  return people.find(p => candidate.includes(p)) || '';
+	}
+	```
+
 ## 8 搬移特性
 
 ### 8.1 搬移函数
@@ -533,6 +792,10 @@
 	```
 	
 ### 8.6 移动语句
+
+### 8.7 拆分循环
+
+### 8.8 以管道取代循环
 
 ## 9 重新组织数据
 
