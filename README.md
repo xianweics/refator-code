@@ -793,9 +793,78 @@
 	
 ### 8.6 移动语句
 
+- 目的：高内聚内部代码
+
+- 场景：如果有几行代码取用了同一个数据结构，那么最好让它们在一起
+
+- 例子：
+  ```javascript
+  const pricePlan = retrievePricingPlan();
+  const order = retreiveOrder();
+  let charge;
+  const chargePerUnit = pricingPlan.unit();
+  ```
+  ```javascript
+  const pricePlan = retrievePricingPlan();
+  const chargePerUnit = pricingPlan.unit();
+  const order = retreiveOrder();
+  let charge;
+  ```
+
 ### 8.7 拆分循环
 
+- 目的：保持循环内部只做一件事
+
+- 场景：如果循环内部身兼多职
+
+- 例子：
+	```javascript
+	let averageAge = 0;
+	let totalSalary = 0;
+	for(const p of people){
+	  averageAge += p.age;
+	  totalSalary += p.salary;
+	}
+	averageAge = averageAge / people.length;
+	```
+	```javascript
+	let averageAge = 0;
+	for(const p of people){
+	  averageAge += p.age;
+	}
+	let totalSalary = 0;
+	for(const p of people){
+	  averageAge += p.age;
+	}
+	averageAge = averageAge / people.length;
+	```
+	
+	> 先进行重构，在进行性能优化。将代码变得清晰，对后期的扩展、优化，都极其方便 	
+
 ### 8.8 以管道取代循环
+
+- 目的：提高代码可读性
+
+- 场景：如果代码的逻辑可以通过内置方法处理
+
+- 例子：
+	```javascript
+	const names = [];
+	for(const i of input){
+	  if(i.job === 'programmer'){
+	    names.push(i.name);
+	  }
+	}
+	```
+	```javascript
+	const names = input
+	.filter(i => i.job === 'programmer')
+	.map(i => i.name);
+	```
+
+### 8.9 移除死代码
+
+- 目的：移除无用代码
 
 ## 9 重新组织数据
 
