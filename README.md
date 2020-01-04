@@ -37,13 +37,13 @@
 - 复审代码时重构
 - 何时不应该重构：
 	- 只有当需要理解其工作原理时
-	- 如果重写比重构容易。
+	- 如果重写比重构容易
 
 ### 2.5 重构的挑战
 
 - 缓解新功能开发
 	- 重构的唯一目的就是让我们开发更快，用更少的工作量创造更大的价值
-	- 重构应该总是由经济利益驱动，而不是在于把代码库打磨得闪闪发光
+	- 重构应该总是由**经济利益**驱动，而不是在于把代码库打磨得闪闪发光
 - 分支
 	- 持续集成，也叫基于主干开发，避免任何分支彼此差距太大，从而降低合并的难度
 - 测试
@@ -59,7 +59,7 @@
 ### 2.7 重构与软件开发过程
 
 - 极限编程是最早的敏捷软件开发方法之一。要真正以敏捷的方式运作项目，团队成员必须在重构上有能力、有热情，他们采用的开发过程必须与常规的、持续的重构相匹配
-- 自测试代码---持续集成---重构
+- 自测试代码 -> 持续集成 -> 重构
 
 ### 2.8 重构与性能
 
@@ -68,7 +68,7 @@
 
 ### 2.9 重构起源何处
 
-- 优秀的程序员肯定会花一些时间来清理自己的代码，因为他们指定自己几乎无法一开始就写出整洁的代码
+- 优秀的程序员肯定会花一些时间来清理自己的代码，因为他们确定自己几乎无法一开始就写出整洁的代码
 
 ### 2.10 自动化重构
 
@@ -77,29 +77,29 @@
 ## 3 代码的坏味道
 
 - 神秘命名：如果想不出一个好的名字，说明背后很可能隐藏着更深的设计问题
-- 重复代码
-- 过长函数
-- 过长参数列表
-- 全局数据
-- 可变数据：优化=》函数式编程=》数据永不改变
-- 发散式变化：做出的某个模块的小修改，必须修改多个函数。优化=》每次只关心一个上下文
-- 霰弹式修改：每次遇到变化，都必须在很多不同的类内做出许多小修改。
+- 重复代码：优化：对比差异，提取相同。
+- 过长函数：优化：条件、循环、公共集中的过程提取处理
+- 过长参数列表：优化：使用对象合并参数
+- 全局数据：优化：合并数据到方法、类成员中
+- 可变数据：优化：函数式编程、数据永不改变
+- 发散式变化：做出的某个模块的小修改，必须修改某个类的多个函数。优化：每次只关心一个上下文，将联动的改变提取处理
+- 霰弹式修改：每次遇到变化，都必须在很多*不同的类*内做出许多小修改。优化：提取公共方法
 - 依恋情结：如果一个函数跟另一个模块中的函数或者数据交流格外频繁，远胜于在自己所处的模块内部交流
 	- 模块化：力求将代码分出区域，最大化区域内部的交互、最小化跨区域的交互。所谓高内聚，低耦合
-- 数据泥团
-- 基本类型偏执：一些基本类型无法表示一个数据的真实意义，例如电话号码、温度等。优化=》使用类字符串类型变量取代基本类型
-- 重复的switch
-- 循环语句
-- 冗赘的元素
-- 夸夸其谈通用性
-- 临时字段
-- 过长的消息链
-- 中间人
-- 内幕交易
-- 过大的类
-- 异曲同工的类
-- 纯数据类：它们拥有一些字段，以及访问、读写这些字段的函数
-- 被拒绝的遗赠：如果子类继承超类的数据和方法，但不使用
+- 数据泥团：两个类中相同的字段、许多函数签名中相同的参数。优化：提取公共字段为一个类、对象
+- 基本类型偏执：一些基本类型无法表示一个数据的真实意义，例如电话号码、温度等。优化：使用类、对象字符串类型变量取代基本类型
+- 重复的 `switch`：优化：使用策略模式、提取子类
+- 循环语句：同*过长函数*
+- 冗赘的元素：优化：内联、删除
+- 夸夸其谈通用性：优化：内联、删除
+- 临时字段：优化：内联、删除
+- 过长的消息链：优化：减少委托关系
+- 中间人：优化：用继承替代代理委托
+- 内幕交易：优化：合并相同的联系，提取不同的成分
+- 过大的类：优化：提取类、子类、接口
+- 异曲同工的类：优化：提取公共类、使用子类继承
+- 纯数据类：它们拥有一些字段，以及访问、读写这些字段的函数。优化：将相关操作封装进去，降低 `public` 成员变量
+- 被拒绝的遗赠：如果子类继承超类的数据和方法，但不使用。优化：用内联数据和方法、代理委托替代继承关系
 - 注释：当你感觉需要编写注释时，请先尝试重构，试着让所有注释变得多余
 
 ## 4 构筑测试体系
@@ -124,21 +124,21 @@
 - 例子
 
     ```javascript
-    describe('province', ()=>{
+    describe('province', () => {
         const shanghai = new Province('shanghai');
-        it('shortfall', ()=>{
+        it('shortfall', () => {
             expect(shanghai.shortfall).equal(5)
         })
     })
     ```
     change to
     ```javascript
-    describe('province', ()=>{
+    describe('province', () => {
         let shanghai = null;
-        beforeEach(()=>{
+        beforeEach(() => {
             shanghai = new Province('shanghai');
         })
-        it('shortfall', ()=>{
+        it('shortfall', () => {
             expect(shanghai.shortfall).equal(5)
         })
     })
@@ -171,33 +171,32 @@
 
 - 对立：[内联函数](#62内联函数)
 
-- 目的：将意图与实现分开。意图=》主干；实现=〉分支的实现
+- 目的：将意图与实现分开。意图 == 主干；实现 == 分支的实现
 
 - 场景：如果需要花时间浏览一段代码才能弄清它到底干什么，那么就应该将其提炼到一个函数中，并根据它所做的事为其命名。以后再读到这段代码时，可以一眼就能知道函数的用途，大多数根本不需要关心函数如何实现。
 
 - 例子： 
-    ```javascript
-    function printOwing(invoice){
-        printBanner();
-        const outstanding = calculateOutstanding();
-        
-        //print details
-        console.info('name:', invoice.name);
-        console.info('amount:', outstanding);
-    }
-    ```
-    ```javascript
-    function printOwing(invoice){
-        printBanner();
-        const outstanding = calculateOutstanding();
-        printDetails(outstanding, invoice);
-        
-        function printDetails(){
-            console.info('name:', invoice.name);
-            console.info('amount:', outstanding);
-        }
-    }
-    ```
+  ```javascript
+  function printOwing(invoice){
+    printBanner();
+    const outstanding = calculateOutstanding();      
+    //print details
+    console.info('name:', invoice.name);
+		console.info('amount:', outstanding);
+	}
+	```
+	```javascript
+	function printOwing(invoice){
+		printBanner();
+		const outstanding = calculateOutstanding();
+		printDetails(outstanding, invoice);
+
+	  function printDetails(){
+			console.info('name:', invoice.name);
+			console.info('amount:', outstanding);
+		}
+	}
+	```
 
 ### 6.2 内联函数
 
