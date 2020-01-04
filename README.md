@@ -122,27 +122,26 @@
 - 编写为臻完善的测试并经常运行，好过对完美测试的无尽等待
 - 保持每个测试用例独立性，避免产生共享对象。因为测试之间会通过共享产生交互，而测试的结果就会受测试运行次序的影响，导致测试结果的不确定性
 - 例子
-
-    ```javascript
-    describe('province', () => {
-        const shanghai = new Province('shanghai');
-        it('shortfall', () => {
-            expect(shanghai.shortfall).equal(5)
-        })
-    })
-    ```
-    change to
-    ```javascript
-    describe('province', () => {
-        let shanghai = null;
-        beforeEach(() => {
-            shanghai = new Province('shanghai');
-        })
-        it('shortfall', () => {
-            expect(shanghai.shortfall).equal(5)
-        })
-    })
-    ```
+	```javascript
+  describe('province', () => {
+		const shanghai = new Province('shanghai');
+		it('shortfall', () => {
+			expect(shanghai.shortfall).equal(5)
+		})
+	})
+	```
+	change to
+	```javascript
+	describe('province', () => {
+		let shanghai = null;
+		beforeEach(() => {
+			shanghai = new Province('shanghai');
+		})
+		it('shortfall', () => {
+			expect(shanghai.shortfall).equal(5)
+		})
+	})
+	```
 
 ### 4.5 修改测试夹具
 
@@ -176,12 +175,12 @@
 - 场景：如果需要花时间浏览一段代码才能弄清它到底干什么，那么就应该将其提炼到一个函数中，并根据它所做的事为其命名。以后再读到这段代码时，可以一眼就能知道函数的用途，大多数根本不需要关心函数如何实现。
 
 - 例子： 
-  ```javascript
-  function printOwing(invoice){
-    printBanner();
-    const outstanding = calculateOutstanding();      
-    //print details
-    console.info('name:', invoice.name);
+	```javascript
+	function printOwing(invoice){
+		printBanner();
+		const outstanding = calculateOutstanding();      
+		//print details
+		console.info('name:', invoice.name);
 		console.info('amount:', outstanding);
 	}
 	```
@@ -191,7 +190,7 @@
 		const outstanding = calculateOutstanding();
 		printDetails(outstanding, invoice);
 
-	  function printDetails(){
+		function printDetails(){
 			console.info('name:', invoice.name);
 			console.info('amount:', outstanding);
 		}
