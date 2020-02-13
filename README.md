@@ -453,7 +453,7 @@
 	}
 	```
 	```javascript
-	class Person{{
+	class Person{
 	  get course(){
 	    return this._courses.slice();
 	  }
