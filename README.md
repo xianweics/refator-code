@@ -210,16 +210,16 @@
 - 例子： 
     ```javascript
     function getRating(driver){
-        return moreThanFiveDeliveries(driver) ? 2 : 1;
+      return moreThanFiveDeliveries(driver) ? 2 : 1;
     }
     
     function moreThanFiveDeliveries(driver){
-        return driver.deliveries > 5;
+      return driver.deliveries > 5;
     }
     ```
     ```javascript
     function getRating(driver){
-        return driver.deliveries > 5 ? 2 : 1;
+      return driver.deliveries > 5 ? 2 : 1;
     }
     ```
 
@@ -290,10 +290,10 @@
     ```javascript
     let defaultOwner = {};
     export function defaultOwner(){
-        return defaultOwner;
+      return defaultOwner;
     }
     export function getDefaultOwner(arg){
-        defaultOwner = arg;
+      defaultOwner = arg;
     }
     ```
 
@@ -341,9 +341,9 @@
     ```
     ```javascript
     class Reading{
-        base(){}
-        taxableCharge(){}
-        calcBaseCharge(){}
+      base(){}
+      taxableCharge(){}
+      calcBaseCharge(){}
     }
     ```
     
@@ -362,10 +362,10 @@
     ```
     ```javascript
     function enrichReading(arg){
-        const reading = _.cloneDeep(arg);
-        reading.baseCharge = base(reading);
-        reading.taxableCharge = taxableCharge(reading);
-        return reading;
+      const reading = _.cloneDeep(arg);
+      reading.baseCharge = base(reading);
+      reading.taxableCharge = taxableCharge(reading);
+      return reading;
     }
     ```
     
@@ -386,15 +386,15 @@
     const orderPrice = price(orderRecord, priceList);
     
     function parseOrder(str){
-        const values = str.split(/\s+/);
-        return {
-            priceId: values[0].split('-')[1],
-            quantity: parseInt(values[1]) 
-        };
+      const values = str.split(/\s+/);
+      return {
+        priceId: values[0].split('-')[1],
+        quantity: parseInt(values[1]) 
+      };
     }
     
     function price(order, priceList){
-        return order.quantity * priceList[order.productId];
+      return order.quantity * priceList[order.productId];
     }
     ```
 
@@ -887,12 +887,12 @@
 - 例子：
     ```javascript
     class Organization{
-        get name(){}
+      get name(){}
     }
     ```
     ```javascript
     class Organization{
-        get title(){}
+      get title(){}
     }
     ```
     
@@ -905,23 +905,23 @@
 - 例子：
     ```javascript
     get discountTotal(){
-        return this._discountTotal;
+      return this._discountTotal;
     }
     set discount(number){
-        const old = this._discount;
-        this._discount = number;
-        this._discountTotal += old - number;
+      const old = this._discount;
+      this._discount = number;
+      this._discountTotal += old - number;
     }
     ```
     ```javascript
     get discountTotal(){
-        return this._baseTotal - this._discount;
+      return this._baseTotal - this._discount;
     }
 		get discount(){
-		    return this._discount;
+		  return this._discount;
 		}
     set discount(number){
-        this._discount = number;
+      this._discount = number;
     }
     ```
     
@@ -936,16 +936,16 @@
 - 例子：
     ```javascript
     class Product{
-        applyDiscount(arg){
-            this._price -= arg;
-        }
+      applyDiscount(arg){
+        this._price -= arg;
+      }
     }
     ```
     ```javascript
     class Product{
-        applyDiscount(arg){
-            this._price = new Money(this._price.amount - arg, this._price.currency);
-        }
+      applyDiscount(arg){
+        this._price = new Money(this._price.amount - arg, this._price.currency);
+      }
     }
     ```
     
