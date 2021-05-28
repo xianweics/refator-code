@@ -124,22 +124,22 @@
 - 例子
 	```javascript
   describe('province', () => {
-		const shanghai = new Province('shanghai');
-		it('shortfall', () => {
-			expect(shanghai.shortfall).equal(5)
-		})
+	  const shanghai = new Province('shanghai');
+	  it('shortfall', () => {
+		  expect(shanghai.shortfall).equal(5)
+    })
 	})
 	```
 	change to
 	```javascript
 	describe('province', () => {
-		let shanghai = null;
-		beforeEach(() => {
-			shanghai = new Province('shanghai');
-		})
-		it('shortfall', () => {
-			expect(shanghai.shortfall).equal(5)
-		})
+	  let shanghai = null;
+    beforeEach(() => {
+      shanghai = new Province('shanghai');
+	  })
+	  it('shortfall', () => {
+	    expect(shanghai.shortfall).equal(5)
+	  })
 	})
 	```
 
