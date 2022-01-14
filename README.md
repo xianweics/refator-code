@@ -122,26 +122,26 @@
 - 编写为臻完善的测试并经常运行，好过对完美测试的无尽等待
 - 保持每个测试用例独立性，避免产生共享对象。因为测试之间会通过共享产生交互，而测试的结果就会受测试运行次序的影响，导致测试结果的不确定性
 - 例子
-	```javascript
+  ```javascript
   describe('province', () => {
-	  const shanghai = new Province('shanghai');
-	  it('shortfall', () => {
-		  expect(shanghai.shortfall).equal(5)
+    const shanghai = new Province('shanghai');
+    it('shortfall', () => {
+	  expect(shanghai.shortfall).equal(5)
     })
-	})
-	```
-	change to
-	```javascript
-	describe('province', () => {
-	  let shanghai = null;
+  })
+  ```
+  change to
+  ```javascript
+  describe('province', () => {
+    let shanghai = null;
     beforeEach(() => {
       shanghai = new Province('shanghai');
-	  })
-	  it('shortfall', () => {
-	    expect(shanghai.shortfall).equal(5)
-	  })
-	})
-	```
+    })
+    it('shortfall', () => {
+	  expect(shanghai.shortfall).equal(5)
+    })
+  })
+  ```
 
 ### 4.5 修改测试夹具
 
@@ -175,27 +175,27 @@
 - 场景：如果需要花时间浏览一段代码才能弄清它到底干什么，那么就应该将其提炼到一个函数中，并根据它所做的事为其命名。以后再读到这段代码时，可以一眼就能知道函数的用途，大多数根本不需要关心函数如何实现。
 
 - 例子： 
-	```javascript
-	function printOwing(invoice){
-		printBanner();
-		const outstanding = calculateOutstanding();      
-		//print details
-		console.info('name:', invoice.name);
-		console.info('amount:', outstanding);
-	}
-	```
-	```javascript
-	function printOwing(invoice){
-		printBanner();
-		const outstanding = calculateOutstanding();
-		printDetails(outstanding, invoice);
+  ```javascript
+  function printOwing(invoice){
+    printBanner();
+    const outstanding = calculateOutstanding();      
+    //print details
+    console.info('name:', invoice.name);
+    console.info('amount:', outstanding);
+  }
+  ```
+  ```javascript
+  function printOwing(invoice){
+    printBanner();
+	const outstanding = calculateOutstanding();
+	printDetails(outstanding, invoice);
 
-		function printDetails(){
-			console.info('name:', invoice.name);
-			console.info('amount:', outstanding);
-		}
+	function printDetails(){
+	  console.info('name:', invoice.name);
+	  console.info('amount:', outstanding);
 	}
-	```
+  }
+  ```
 
 ### 6.2 内联函数
 
@@ -230,15 +230,15 @@
 - 目的：将复杂的表达式使用变量说明
 
 - 例子： 
-    ```javascript
-    return order.quantity * order.itemPrice - Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 + Math.min(order.quantity * order.itemPrice * 0.1, 100);
-    ```
-    ```javascript
-    const basePrice = order.quantity * order.itemPrice;
-    const quantityDiscount =  Math.max(0, order.quantity - 500) * order.itemPrice * 0.05;
-    const shipping = Math.min(basePrice * 0.1, 100);
-    return basePrice - quantityDiscount + shipping;
-    ```
+  ```javascript
+	return order.quantity * order.itemPrice - Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 + Math.min(order.quantity * order.itemPrice * 0.1, 100);
+	```
+	```javascript
+	const basePrice = order.quantity * order.itemPrice;
+	const quantityDiscount =  Math.max(0, order.quantity - 500) * order.itemPrice * 0.05;
+	const shipping = Math.min(basePrice * 0.1, 100);
+	return basePrice - quantityDiscount + shipping;
+	```
     
 ### 6.4 内联变量
 
@@ -251,13 +251,13 @@
   - 表达式比变量更有表现力
   
 - 例子： 
-    ```javascript
-    const basePrice = order.basePrice;
-    return basePrice > 25;
-    ```
-    ```javascript
-    return order.basePrice > 25;
-    ```
+	```javascript
+	const basePrice = order.basePrice;
+	return basePrice > 25;
+	```
+	```javascript
+	return order.basePrice > 25;
+	```
     
 ### 6.5 改变函数声明
 
@@ -268,12 +268,12 @@
   - 先写一句注释描述这个函数的用途，再把这句注释变成函数的名字
   
 - 例子： 
-    ```javascript
-    function calc(){}
-    ```
-    ```javascript
-    function calcOrder(){}
-    ```
+	```javascript
+	function calc(){}
+	```
+	```javascript
+	function calcOrder(){}
+	```
     
 ### 6.6 封装变量
 
@@ -284,30 +284,30 @@
 - 场景：如果数据的可访问范围大
 
 - 例子：
-    ```javascript
-    let defaultOwner = {};
-    ```
-    ```javascript
-    let defaultOwner = {};
-    export function defaultOwner(){
-      return defaultOwner;
-    }
-    export function getDefaultOwner(arg){
-      defaultOwner = arg;
-    }
-    ```
+	```javascript
+	let defaultOwner = {};
+	```
+	```javascript
+	let defaultOwner = {};
+	export function defaultOwner(){
+		return defaultOwner;
+	}
+	export function getDefaultOwner(arg){
+		defaultOwner = arg;
+	}
+	```
 
 ### 6.7 变量改名
 
 - 目的：好名字可让上下文更清晰
 
 - 例子： 
-    ```javascript
-    const a = height * width;
-    ```
-    ```javascript
-    const area = height * width;
-    ```
+	```javascript
+	const a = height * width;
+	```
+	```javascript
+	const area = height * width;
+	```
     
 ### 6.8 引入参数对象
 
@@ -316,14 +316,14 @@
 - 场景：一个函数接受多个参数
 
 - 例子： 
-    ```javascript
-    function invoice(startDate, endDate){}
-    function received(starDate, endDate){}
-    ```
-    ```javascript
-    function invoice(dateRange){}
-    function received(dateRanges){}
-    ```
+	```javascript
+	function invoice(startDate, endDate){}
+	function received(starDate, endDate){}
+	```
+	```javascript
+	function invoice(dateRange){}
+	function received(dateRanges){}
+	```
     
 ### 6.9 函数组合成类
 
@@ -334,18 +334,18 @@
 - 场景：如果一组函数形影不离地操作同一块数据（通常是将这块数据作为参数传递给函数）
 
 - 例子： 
-    ```javascript
-    function base(reading){}
-    function taxableCharge(reading){}
-    function calcBaseCharge(reading){}
-    ```
-    ```javascript
-    class Reading{
-      base(){}
-      taxableCharge(){}
-      calcBaseCharge(){}
-    }
-    ```
+	```javascript
+	function base(reading){}
+	function taxableCharge(reading){}
+	function calcBaseCharge(reading){}
+	```
+	```javascript
+	class Reading{
+		base(){}
+		taxableCharge(){}
+		calcBaseCharge(){}
+	}
+	```
     
 ### 6.10 函数组合成变换
 
@@ -356,18 +356,18 @@
 - 场景：需要把数据放到另一个程序中运行，计算出各种派生信息
 
 - 例子： 
-    ```javascript
-    function base(reading){}
-    function taxableCharge(reading){}
-    ```
-    ```javascript
-    function enrichReading(arg){
-      const reading = _.cloneDeep(arg);
-      reading.baseCharge = base(reading);
-      reading.taxableCharge = taxableCharge(reading);
-      return reading;
-    }
-    ```
+	```javascript
+	function base(reading){}
+	function taxableCharge(reading){}
+	```
+	```javascript
+	function enrichReading(arg){
+		const reading = _.cloneDeep(arg);
+		reading.baseCharge = base(reading);
+		reading.taxableCharge = taxableCharge(reading);
+		return reading;
+	}
+	```
     
 ### 6.11 拆分阶段
 
@@ -376,27 +376,27 @@
 - 场景：如果一段代码同时处理两件或者更多不同的事情
 
 - 例子：
-    ```javascript
-    const orderArr = orderStr.split(/\s+/);
-    const productPrice = priceList(order[0].split('-')[1]);
-    const orderPrice = parseInt(orderArr[1]) * productPrice;
-    ```
-    ```javascript
-    const orderRecord = parseOrder(order);
-    const orderPrice = price(orderRecord, priceList);
-    
-    function parseOrder(str){
-      const values = str.split(/\s+/);
-      return {
-        priceId: values[0].split('-')[1],
-        quantity: parseInt(values[1]) 
-      };
-    }
-    
-    function price(order, priceList){
-      return order.quantity * priceList[order.productId];
-    }
-    ```
+	```javascript
+	const orderArr = orderStr.split(/\s+/);
+	const productPrice = priceList(order[0].split('-')[1]);
+	const orderPrice = parseInt(orderArr[1]) * productPrice;
+	```
+	```javascript
+	const orderRecord = parseOrder(order);
+	const orderPrice = price(orderRecord, priceList);
+
+	function parseOrder(str){
+		const values = str.split(/\s+/);
+		return {
+			priceId: values[0].split('-')[1],
+			quantity: parseInt(values[1]) 
+		};
+	}
+
+	function price(order, priceList){
+		return order.quantity * priceList[order.productId];
+	}
+	```
 
 ## 7 封装
 
@@ -409,7 +409,6 @@
 - 场景：对于可变数据
 
 - 例子：
-
   ```javascript
   const organization = {name: 'John', country: 'GB'};
   ```
@@ -433,7 +432,7 @@
       this._country = arg;
     }
   }
-  ```
+  ```	
 
 ### 7.2 封装集合
 
