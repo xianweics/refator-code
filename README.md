@@ -118,19 +118,18 @@
 - 频繁地运行测试，对于你正在处理的代码与其对应的测试至少每隔几分钟就要运行一次，每天至少运行一次所有的测试
 
 ### 4.4 再添加一个测试
-
 - 编写为臻完善的测试并经常运行，好过对完美测试的无尽等待
 - 保持每个测试用例独立性，避免产生共享对象。因为测试之间会通过共享产生交互，而测试的结果就会受测试运行次序的影响，导致测试结果的不确定性
 - 例子
+	
   ```javascript
   describe('province', () => {
     const shanghai = new Province('shanghai');
     it('shortfall', () => {
-	  expect(shanghai.shortfall).equal(5)
+      expect(shanghai.shortfall).equal(5);
     })
   })
   ```
-  change to
   ```javascript
   describe('province', () => {
     let shanghai = null;
@@ -138,7 +137,7 @@
       shanghai = new Province('shanghai');
     })
     it('shortfall', () => {
-	  expect(shanghai.shortfall).equal(5)
+      expect(shanghai.shortfall).equal(5)
     })
   })
   ```
@@ -179,7 +178,7 @@
   function printOwing(invoice){
     printBanner();
     const outstanding = calculateOutstanding();      
-    //print details
+    // print details
     console.info('name:', invoice.name);
     console.info('amount:', outstanding);
   }
@@ -187,13 +186,12 @@
   ```javascript
   function printOwing(invoice){
     printBanner();
-	const outstanding = calculateOutstanding();
-	printDetails(outstanding, invoice);
-
-	function printDetails(){
-	  console.info('name:', invoice.name);
-	  console.info('amount:', outstanding);
-	}
+    const outstanding = calculateOutstanding();
+    printDetails(outstanding, invoice);
+    function printDetails(outstanding, invoice) {
+      console.info('name:', invoice.name);
+      console.info('amount:', outstanding);
+    }
   }
   ```
 
@@ -208,20 +206,20 @@
     - 代码太多间接层，使系统中的所有函数都似乎只是对另一个函数简单的委托
 
 - 例子： 
-    ```javascript
-    function getRating(driver){
-      return moreThanFiveDeliveries(driver) ? 2 : 1;
-    }
-    
-    function moreThanFiveDeliveries(driver){
-      return driver.deliveries > 5;
-    }
-    ```
-    ```javascript
-    function getRating(driver){
-      return driver.deliveries > 5 ? 2 : 1;
-    }
-    ```
+  ```javascript
+  function getRating(driver){
+	  return moreThanFiveDeliveries(driver) ? 2 : 1;
+  }
+
+  function moreThanFiveDeliveries(driver){
+    return driver.deliveries > 5;
+  }
+  ```
+  ```javascript
+  function getRating(driver){
+    return driver.deliveries > 5 ? 2 : 1;
+  }
+  ```
 
 ### 6.3 提炼变量
 
@@ -231,14 +229,14 @@
 
 - 例子： 
   ```javascript
-	return order.quantity * order.itemPrice - Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 + Math.min(order.quantity * order.itemPrice * 0.1, 100);
-	```
-	```javascript
-	const basePrice = order.quantity * order.itemPrice;
-	const quantityDiscount =  Math.max(0, order.quantity - 500) * order.itemPrice * 0.05;
-	const shipping = Math.min(basePrice * 0.1, 100);
-	return basePrice - quantityDiscount + shipping;
-	```
+  return order.quantity * order.itemPrice - Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 + Math.min(order.quantity * order.itemPrice * 0.1, 100);
+  ```
+  ```javascript
+  const basePrice = order.quantity * order.itemPrice;
+  const quantityDiscount =  Math.max(0, order.quantity - 500) * order.itemPrice * 0.05;
+  const shipping = Math.min(basePrice * 0.1, 100);
+  return basePrice - quantityDiscount + shipping;
+  ```
     
 ### 6.4 内联变量
 
@@ -246,34 +244,31 @@
 
 - 目的：去除不必要变量
 
-- 场景：
-  
-  - 表达式比变量更有表现力
+- 场景：表达式比变量更有表现力
   
 - 例子： 
-	```javascript
-	const basePrice = order.basePrice;
-	return basePrice > 25;
-	```
-	```javascript
-	return order.basePrice > 25;
-	```
+  ```javascript
+  const basePrice = order.basePrice;
+  return basePrice > 25;
+  ```
+  ```javascript
+  return order.basePrice > 25;
+  ```
     
 ### 6.5 改变函数声明
 
 - 目的：好名字能让人一眼看出函数的用途，而不必看代码实现
 
 - 使用：
-  
   - 先写一句注释描述这个函数的用途，再把这句注释变成函数的名字
   
 - 例子： 
-	```javascript
-	function calc(){}
-	```
-	```javascript
-	function calcOrder(){}
-	```
+  ```javascript
+  function calc(){}
+  ```
+  ```javascript
+  function calcOrder(){}
+  ```
     
 ### 6.6 封装变量
 
@@ -284,30 +279,30 @@
 - 场景：如果数据的可访问范围大
 
 - 例子：
-	```javascript
-	let defaultOwner = {};
-	```
-	```javascript
-	let defaultOwner = {};
-	export function defaultOwner(){
-		return defaultOwner;
-	}
-	export function getDefaultOwner(arg){
-		defaultOwner = arg;
-	}
-	```
+  ```javascript
+  let defaultOwner = {};
+  ```
+  ```javascript
+  let defaultOwner = {};
+  export function defaultOwner(){
+    return defaultOwner;
+  }
+  export function getDefaultOwner(arg){
+    defaultOwner = arg;
+  }
+  ```
 
 ### 6.7 变量改名
 
 - 目的：好名字可让上下文更清晰
 
 - 例子： 
-	```javascript
-	const a = height * width;
-	```
-	```javascript
-	const area = height * width;
-	```
+  ```javascript
+  const a = height * width;
+  ```
+  ```javascript
+  const area = height * width;
+  ```
     
 ### 6.8 引入参数对象
 
@@ -316,14 +311,14 @@
 - 场景：一个函数接受多个参数
 
 - 例子： 
-	```javascript
-	function invoice(startDate, endDate){}
-	function received(starDate, endDate){}
-	```
-	```javascript
-	function invoice(dateRange){}
-	function received(dateRanges){}
-	```
+  ```javascript
+  function invoice(startDate, endDate){}
+  function received(starDate, endDate){}
+  ```
+  ```javascript
+  function invoice(dateRange){}
+  function received(dateRanges){}
+  ```
     
 ### 6.9 函数组合成类
 
@@ -334,18 +329,18 @@
 - 场景：如果一组函数形影不离地操作同一块数据（通常是将这块数据作为参数传递给函数）
 
 - 例子： 
-	```javascript
-	function base(reading){}
-	function taxableCharge(reading){}
-	function calcBaseCharge(reading){}
-	```
-	```javascript
-	class Reading{
-		base(){}
-		taxableCharge(){}
-		calcBaseCharge(){}
-	}
-	```
+  ```javascript
+  function base(reading){}
+  function taxableCharge(reading){}
+  function calcBaseCharge(reading){}
+  ```
+  ```javascript
+  class Reading{
+    base(){}
+    taxableCharge(){}
+    calcBaseCharge(){}
+  }
+  ```
     
 ### 6.10 函数组合成变换
 
@@ -356,18 +351,19 @@
 - 场景：需要把数据放到另一个程序中运行，计算出各种派生信息
 
 - 例子： 
-	```javascript
-	function base(reading){}
-	function taxableCharge(reading){}
-	```
-	```javascript
-	function enrichReading(arg){
-		const reading = _.cloneDeep(arg);
-		reading.baseCharge = base(reading);
-		reading.taxableCharge = taxableCharge(reading);
-		return reading;
-	}
-	```
+  ```javascript
+  function base(reading){}
+  function taxableCharge(reading){}
+  ```
+  ```javascript
+  import { cloneDeep } from 'lodash';
+  function enrichReading(arg){
+    const reading = cloneDeep(arg);
+    reading.baseCharge = base(reading);
+    reading.taxableCharge = taxableCharge(reading);
+    return reading;
+  }
+  ```
     
 ### 6.11 拆分阶段
 
@@ -376,27 +372,27 @@
 - 场景：如果一段代码同时处理两件或者更多不同的事情
 
 - 例子：
-	```javascript
-	const orderArr = orderStr.split(/\s+/);
-	const productPrice = priceList(order[0].split('-')[1]);
-	const orderPrice = parseInt(orderArr[1]) * productPrice;
-	```
-	```javascript
-	const orderRecord = parseOrder(order);
-	const orderPrice = price(orderRecord, priceList);
+  ```javascript
+  const orderArr = orderStr.split(/\s+/);
+  const productPrice = priceList(order[0].split('-')[1]);
+  const orderPrice = parseInt(orderArr[1]) * productPrice;
+  ```
+  ```javascript
+  const orderRecord = parseOrder(order);
+  const orderPrice = price(orderRecord, priceList);
 
-	function parseOrder(str){
-		const values = str.split(/\s+/);
-		return {
-			priceId: values[0].split('-')[1],
-			quantity: parseInt(values[1]) 
-		};
-	}
+  function parseOrder(str){
+    const values = str.split(/\s+/);
+    return {
+      priceId: values[0].split('-')[1],
+      quantity: parseInt(values[1]) 
+    };
+  }
 
-	function price(order, priceList){
-		return order.quantity * priceList[order.productId];
-	}
-	```
+  function price(order, priceList){
+    return order.quantity * priceList[order.productId];
+  }
+  ```
 
 ## 7 封装
 
@@ -424,7 +420,7 @@
     }
     set name(arg){
       this._name = arg;
-    }
+    } 
     get country(){
       return this._country;
     }
@@ -432,7 +428,7 @@
       this._country = arg;
     }
   }
-  ```	
+  ```
 
 ### 7.2 封装集合
 
@@ -441,25 +437,25 @@
 - 场景：类中集合为可变数据
 
 - 例子：
-	```javascript
-	class Person{
-	  get courses(){
-	    return this._courses;
-	  }
-	  set courses(list){
-	    this._course = list;
-	  }
-	}
-	```
-	```javascript
-	class Person{
-	  get course(){
-	    return this._courses.slice();
-	  }
-	  addCourse(course){}
-	  removeCourse(course){}
-	}
-	```
+  ```javascript
+  class Person{
+    get courses(){
+      return this._courses;
+    }
+    set courses(list){
+      this._course = list;
+    }
+  }
+  ```
+  ```javascript
+  class Person{
+    get course(){
+      return this._courses.slice();
+    }
+    addCourse(course){}
+    removeCourse(course){}
+  }
+  ```
 
 ### 7.3 以对象取代基本类型
 
@@ -468,12 +464,13 @@
 - 场景：如果数据项需要更多的含义或者行为时
 
 - 例子：
-	```javascript
-	orders.filter(o => 'high' === o.priority || 'rush' === o.priority);
-	```
-	```javascript
-	orders.filter(o => o.priority.higherThan(new Priority('normal')));
-	```
+  ```javascript
+  orders.filter(o => 'high' === o.priority || 'rush' === o.priority);
+  ```
+  ```javascript
+  orders.filter(o => o.priority.higherThan(new Priority('normal')));
+  function Priority(){}
+  ```
 	
 ### 7.4 以查询取代临时变量
 
@@ -486,24 +483,23 @@
 
 - 例子：
   ```javascript
-  const basePrice = this._quantity * this._itemPrice;
-  if(basePrice > 1000){
-    return basePrice * 0.95;
-  }else{
-    return basePrice * 0.98;
+  class Price{
+    getPrice(){
+      const basePrice = this._quantity * this._itemPrice;
+      return basePrice > 1000 ? basePrice * 0.95 : basePrice * 0.98;
+    }
   }
   ```
   ```javascript
-  get basePrice(){ 
-    this._quantity * this._itemPrice;
-  }
-  if(this.basePrice > 1000){
-    return this.basePrice * 0.95;
-  }else{
-    return this.basePrice * 0.98;
+  class Price{
+    get basePrice(){ 
+      return this._quantity * this._itemPrice;
+    }
+    getPrice(){
+      return this.basePrice > 1000 ? this.basePrice * 0.95 : this.basePrice * 0.98;
+    }
   }
   ```
-
 
 ### 7.5 提取类
 
@@ -511,37 +507,40 @@
 
 - 目的：将大类分成小类
 
-- 场景：如果维护一个大量函数和数据的类
+- 场景：维护一个大量函数和数据的类
 
 - 例子：
-	```javascript
-	class Person{
-		get officeAreaCode(){
-			return this._officeAreaCode;
-		}
-		get officeNumber(){
-			return this._officeNumber;
-		}
-	}
-	```
-	```javascript
-	class Person{
-		get officeAreaCode(){
-			return this._telephoneNumber.areaCode;
-		}
-		get officeNumber(){
-			return this._telephoneNumber.number;
-		}
-	}
-	class TelephoneNumber{
-	  get areaCode(){
-	    return this._areaCode;
-	  }
-	  get number(){
-	    return this._number;
-	  }
-	}
-	```
+  ```javascript
+  class Person{
+    get officeAreaCode(){
+      return this._officeAreaCode;
+    }
+    get officeNumber(){
+      return this._officeNumber;
+    }
+  }
+  ```
+  ```javascript
+  class Person{
+    constructor(telephoneNumber){
+      this._telephoneNumber = telephoneNumber;
+    }
+    get officeAreaCode(){
+      return this._telephoneNumber.areaCode;
+    }
+    get officeNumber(){
+      return this._telephoneNumber.number;
+    }
+  }
+  class TelephoneNumber{
+    get areaCode(){
+      return this._areaCode;
+    }
+    get number(){
+      return this._number;
+    }
+  }
+  ```
 	
 ### 7.6 内联类
 
@@ -554,35 +553,38 @@
 	- 重新分类两个类的不同职责
 
 - 例子：
-	```javascript
-	class Person{
-		get officeAreaCode(){
-			return this._telephoneNumber.areaCode;
-		}
-		get officeNumber(){
-			return this._telephoneNumber.number;
-		}
-	}
-	class TelephoneNumber{
-	  get areaCode(){
-	    return this._areaCode;
-	  }
-	  get number(){
-	    return this._number;
-	  }
-	}
-	```
-	```javascript
-	class Person{
-		get officeAreaCode(){
-			return this._officeAreaCode;
-		}
-		get officeNumber(){
-			return this._officeNumber;
-		}
-	}
-	```
-	
+  ```javascript
+  class Person{
+    constructor(telephoneNumber){
+      this._telephoneNumber = telephoneNumber;
+    }
+    get officeAreaCode(){
+      return this._telephoneNumber.areaCode;
+    }
+    get officeNumber(){
+      return this._telephoneNumber.number;
+    }
+  }
+  class TelephoneNumber{
+    get areaCode(){
+      return this._areaCode;
+    }
+    get number(){
+      return this._number;
+    }
+  }
+  ```
+  ```javascript
+  class Person{
+    get officeAreaCode(){
+      return this._officeAreaCode;
+    }
+    get officeNumber(){
+      return this._officeNumber;
+    }
+  }
+  ```
+ 
 ### 7.7 隐藏委托关系
 
 - 对立：[移除中间人](#78-移除中间人)
@@ -592,17 +594,69 @@
 - 场景：如果被调方接口频繁修改时
 
 - 例子：
-	```javascript
-	const manager = person.department.manager;
-	```
-	```javascript
-	const manager = person.manager;
-	class Person{
-	  get manager(){
-	    return this.department.manager;
-	  }
-	}
-	```
+  ```javascript
+  class Person{
+    constructor(name){
+      this._name = name;
+    }
+    get name(){
+      return this._name;
+    }
+    get department(){
+      return this._department;
+    }
+    set department(name){
+      this._department = name;
+    }
+  }
+  class Department{
+    construtor(department){
+      this._department = department;
+    }
+    get manager(){
+      if(this._department === 'xx'){
+        return 'xx manager';
+      } 
+      return 'default manager'; 
+    }
+  }
+  const person = new Person('John');
+  person.department = new Department('human resource');
+  const manager = person.department.manager;
+  ```
+  ```javascript
+  class Person{
+    constructor(name){
+      this._name = name;
+    }
+    get name(){
+      return this._name;
+    }
+    get department(){
+      return this._department;
+    }
+    set department(name){
+      this._department = name;
+    }
+    get manager(){
+      return this._department.manager;
+    }
+  }
+  class Department{
+    construtor(department){
+      this._department = department;
+    }
+    get manager(){
+      if(this._department === 'xx'){
+        return 'xx manager';
+      } 
+      return 'default manager'; 
+    }
+  }
+  const person = new Person('John');
+  person.department = new Department('human resource');
+  const manager = person.manager;
+  ```
 	
 ### 7.8 移除中间人
 
@@ -612,18 +666,17 @@
 
 - 场景：如果过多的转发函数没有让程序本身提升的扩展性，就应删除部分委托
 
-- 例子：
-	```javascript
-	const manager = person.manager;
-	class Person{
-	  get manager(){
-	    return this.department.manager;
-	  }
-	}
-	```
-	```javascript
-	const manager = person.department.manager;
-	```
+- 例子：与之相反[隐藏委托关系](#77-隐藏委托关系)
+  ```javascript
+  const person = new Person('John');
+  person.department = new Department('human resource');
+  const manager = person.manager;
+  ```
+  ```javascript
+  const person = new Person('John');
+  person.department = new Department('human resource');
+  const manager = person.department.manager;
+  ```
 	
 ### 7.9 替换算法
 
@@ -632,28 +685,28 @@
 - 场景：随着对业务不断深入，发觉有更简单的算法实现
 
 - 例子：
-	```javascript
-	function foundPerson(people){
-	  for(let i = 0; i < people.length; i++){
-	    if(people[i] === 'John'){
-	      return 'John';
-	    }
-	    if(people[i] === 'Maria'){
-	      return 'Maria';
-	    }
-	     if(people[i] === 'Mike'){
-	      return 'Mike';
-	    }
-	  }
-	  return '';
-	}
-	```
-	```javascript
-	function foundPerson(people){
-		const candidate = ['John', 'Maria', 'Mike'];
-	  return people.find(p => candidate.includes(p)) || '';
-	}
-	```
+  ```javascript
+  function foundPerson(people){
+    for(let i = 0; i < people.length; i++){
+      if(people[i] === 'John'){
+        return 'John';
+      }
+      if(people[i] === 'Maria'){
+        return 'Maria';
+      }
+      if(people[i] === 'Mike'){
+        return 'Mike';
+      }
+    }
+    return '';
+  }
+  ```
+  ```javascript
+  function foundPerson(people){
+    const candidate = ['John', 'Maria', 'Mike'];
+    return people.find(p => candidate.includes(p)) || '';
+  }
+  ```
 
 ## 8 搬移特性
 
@@ -664,22 +717,18 @@
 - 场景：如果一个方法频繁调用别处的一个函数，并且被频繁调用的函数在该上下文关系不大时
 
 - 例子：
-    ```javascript
-    class Account{
-        get overdraftCharge(){}
-    }
-    ```
-    ```javascript
-    class AccountType{
-        get overdraftCharge(){}
-    }
-    ```
+  ```javascript
+  class Account{
+    get overdraftCharge(){}
+  }
+  ```
+  ```javascript
+  class AccountType{
+    get overdraftCharge(){}
+  }
+  ```
     
-    > 将内聚放在一个类中，改名。
-    
-    > 变量为名词
-    
-    > 方法为动词
+> 将内聚放在一个类中，改名；变量为名词；方法为动词。
 
 ### 8.2 搬移字段
 
@@ -690,23 +739,39 @@
 - 例子：
   ```javascript
   class Customer{
-  	get plan(){
-  		return this._plan;
-  	}
-  	get disountRate(){
-  		return this._discountRate;
-  	}
+    constructor(plan, discountRate){
+      this._plan = plan;
+      this._discountRate = discountRate;
+    }
+    get plan(){
+      return this._plan;
+    }
+    get discountRate(){
+      return this._discountRate;
+    }
   }
+  const john = new Customer('John');
+  console.info(john.plan);
+  console.info(john.discountRate);
   ```
   ```javascript
   class Customer{
-  	get plan(){
-  		return this._plan;
-  	}
-  	get disountRate(){
-  		return this.plan.discountRate;
-  	}
+    constructor(plan){
+      this._plan = plan;
+    }
+    get plan(){
+      return this._plan;
+    }
+    get discountRate(){
+      return this.plan.discountRate;
+    }
   }
+  const john = new Customer({
+    name: 'John',
+    discountRate: 0.25
+  });
+  console.info(john.plan);
+  console.info(john.discountRate);
   ```
   
 ### 8.3 搬移语句到函数
@@ -718,26 +783,34 @@
 - 场景：发现调用某个函数时，总有一些相同的代码也需要每次执行
 
 - 例子：
-	```javascript
-	result.push(`<p>title: ${person.photo.title}</p>`);
-	result.concat(photoData(person.photo));
-	function photoData(photo){
-	  return {
-	    `<p>location: ${photo.location}</p>`;
-	  	`<p>date: ${photo.date}</p>`;
-	  }
-	}
-	```
-	```javascript
-	result.concat(photoData(person.photo));
-	function photoData(photo){
-	  return {
-	    `<p>title: ${person.photo.title}</p>`;
-	    `<p>location: ${photo.location}</p>`;
-	  	`<p>date: ${photo.date}</p>`;
-	  }
-	}
-	```
+  ```javascript
+  function getResult(person) {
+    let result = [];
+    result.push(`<p>title: ${person.photo.title}</p>`);
+    result = result.concat(photoData(person.photo));
+    function photoData(photo){
+      return [
+        `<p>location: ${photo.location}</p>`,
+        `<p>date: ${photo.date}</p>`
+      ];
+    }
+    return result;
+  };
+  getResult({photo: {title: 'title', location: 'New York', data: '01/16/2022'}});
+  ```
+  ```javascript
+  function getResult(person) {
+    function photoData(photo){
+      return [
+        `<p>title: ${photo.title}</p>`,
+        `<p>location: ${photo.location}</p>`,
+        `<p>date: ${photo.date}</p>`
+      ];
+    }
+    return [].concat(photoData(person.photo));
+  };
+  getResult({photo: {title: 'title', location: 'New York', data: '01/16/2022'}});
+  ```
 	
 ### 8.4 搬移语句到调用者
 
@@ -748,21 +821,31 @@
 - 场景：以往多个地方公共的行为，如今需要在某些调用点表现不同的行为，并且调用点与调用者之间的边界差别不大。如果差别较大的，只能重新设计
 
 - 例子：
-	```javascript
-	emitPhotoData(outStream, person.photo);
-	function emitPhotoData(outStream, photo){
-	  outStream.write(`<p>title: ${photo.title}</p>`);
-	  outStream.write(`<p>title: ${photo.location}</p>`);
-	}
-	```
-	
-	```javascript
-	emitPhotoData(outStream, person.photo);
-	outStream.write(`<p>title: ${photo.title}</p>`);
-	function emitPhotoData(outStream, photo){
-	  outStream.write(`<p>title: ${photo.location}</p>`);
-	}
-	```
+  ```javascript
+  function demoWrapper(outStream, person){
+    emitPhotoData(outStream, person.photo);
+    function emitPhotoData(outStream, photo){
+      outStream.write(`<p>title: ${photo.title}</p>`);
+      outStream.write(`<p>title: ${photo.location}</p>`);
+    }
+  }
+  
+  const person = {photo: {title: 'title', location: 'New York'}};
+  demoWrapper(document, person);
+  ```
+
+  ```javascript
+  function demoWrapper(outStream, person){
+    emitPhotoData(outStream, person.photo);
+    outStream.write(`<p>title: ${person.photo.title}</p>`);
+    function emitPhotoData(outStream, photo){
+      outStream.write(`<p>title: ${photo.location}</p>`);
+    }
+  }
+  
+  const person = {photo: {title: 'title', location: 'New York'}};
+  demoWrapper(document, person);
+  ```
 	
 ### 8.5 以函数调用取代内联代码
 
@@ -771,18 +854,25 @@
 - 场景：如果一些内联代码做的事情是已有函数可以做到的
 
 - 例子：
-	```javascript
-	let hasMa = false;
-	for(const i of states){
-	  if(i === 'MA'){
-	    hasMa = true;
-	  }
-	}
-	```
-	
-	```javascript
-	const hasMa = states.includes('MA');
-	```
+  ```javascript
+  function demoWrapper(states){
+    let hasMa = false;
+    for(const i of states){
+      if(i === 'MA'){
+        hasMa = true;
+      }
+    }
+    return hasMa;
+  }
+  demoWrapper(['MA','AL']);
+  ```
+
+  ```javascript
+  function demoWrapper(states){
+    return states.includes('MA');
+  }
+  demoWrapper(['MA','AL']);
+  ```
 	
 ### 8.6 移动语句
 
@@ -792,15 +882,19 @@
 
 - 例子：
   ```javascript
+  const retrievePricingPlan = () => ({unit: () => 0.25});
+  const retrieveOrder = () => ({name: 'abc'});
   const pricePlan = retrievePricingPlan();
-  const order = retreiveOrder();
+  const order = retrieveOrder();
   let charge;
-  const chargePerUnit = pricingPlan.unit();
+  const chargePerUnit = pricePlan.unit();
   ```
   ```javascript
+  const retrievePricingPlan = () => ({unit: () => 0.25});
   const pricePlan = retrievePricingPlan();
-  const chargePerUnit = pricingPlan.unit();
-  const order = retreiveOrder();
+  const chargePerUnit = pricePlan.unit();
+  const retrieveOrder = () => ({name: 'abc'});
+  const order = retrieveOrder();
   let charge;
   ```
 
@@ -811,28 +905,30 @@
 - 场景：如果循环内部身兼多职
 
 - 例子：
-	```javascript
-	let averageAge = 0;
-	let totalSalary = 0;
-	for(const p of people){
-	  averageAge += p.age;
-	  totalSalary += p.salary;
-	}
-	averageAge = averageAge / people.length;
-	```
-	```javascript
-	let averageAge = 0;
-	for(const p of people){
-	  averageAge += p.age;
-	}
-	let totalSalary = 0;
-	for(const p of people){
-	  averageAge += p.age;
-	}
-	averageAge = averageAge / people.length;
-	```
+  ```javascript
+  const people = [{age: 20, salary: 20000}, {age: 22, salary: 30000}];
+  let totalAge = 0;
+  let totalSalary = 0;
+  for(const p of people){
+    totalAge += p.age;
+    totalSalary += p.salary;
+  }
+  const averageAge = totalAge / people.length;
+  ```
+  ```javascript
+  const people = [{age: 20, salary: 20000}, {age: 22, salary: 30000}];
+  let totalAge = 0;
+  for(const p of people){
+    totalAge += p.age;
+  }
+  let totalSalary = 0;
+  for(const p of people){
+    totalSalary += p.salary;
+  }
+  const averageAge = totalAge / people.length;
+  ```
 	
-	> 先进行重构，在进行性能优化。将代码变得清晰，对后期的扩展、优化，都极其方便 	
+> 先进行重构，在进行性能优化。将代码变得清晰，对后期的扩展、优化，都极其方便 	
 
 ### 8.8 以管道取代循环
 
@@ -841,19 +937,23 @@
 - 场景：如果代码的逻辑可以通过内置方法处理
 
 - 例子：
-	```javascript
-	const names = [];
-	for(const i of input){
-	  if(i.job === 'programmer'){
-	    names.push(i.name);
-	  }
-	}
-	```
-	```javascript
-	const names = input
-	.filter(i => i.job === 'programmer')
-	.map(i => i.name);
-	```
+  ```javascript
+  const names = [];
+  const values = [{job: 'programmer', name: 'John'}, {job: 'financer', name: 'Kaly'}];
+  for(const i of values){
+    if(i.job === 'programmer'){
+      names.push(i.name);
+    }
+  }
+  console.info(names);
+  ```
+  ```javascript
+  const values = [{job: 'programmer', name: 'John'}, {job: 'financer', name: 'Kaly'}];
+  const names = values
+    .filter(i => i.job === 'programmer')
+    .map(i => i.name);
+  console.info(names);
+  ```
 
 ### 8.9 移除死代码
 
@@ -868,32 +968,36 @@
 - 场景：大多数情况下变量只赋值一次，除了：循环变量（例如：`for(let i =0; i < 5; i++)` 中的`i`），收集结果变量
 
 - 例子：
-    ```javascript
-    let temp = 2 * (height + width);
-    temp = height * width;
-    ```
-    ```javascript
-    const perimeter = 2 * (height * width);
-    const area = height * width;
-    ```
+  ```javascript
+  let height = 10; 
+  let width = 20;
+  let temp = 2 * (height + width);
+  temp = height * width;
+  ```
+  ```javascript
+  const height = 10; 
+  const width = 20;
+  const perimeter = 2 * (height * width);
+  const area = height * width;
+  ```
 
-    > 变量声明可以刚开始声明为 `const`，如果发觉需要重复赋值，再改为 `let`
+> 变量声明可以刚开始声明为 `const`，如果发觉需要重复赋值，再改为 `let`
 
 ### 9.2 字段改名
 
 - 目的：好的名字可以帮助阅读者更易理解
 
 - 例子：
-    ```javascript
-    class Organization{
-      get name(){}
-    }
-    ```
-    ```javascript
-    class Organization{
-      get title(){}
-    }
-    ```
+  ```javascript
+  class Organization{
+    get name(){}
+  }
+  ```
+  ```javascript
+  class Organization{
+    get title(){}
+  }
+  ```
     
 ### 9.3 以查询取代派生变量
 
@@ -902,27 +1006,43 @@
 - 场景：对数据的修改常常导致代码的各个部分以丑陋的形式互相耦合：在一处修改数据，却在另一处造成难以发现的破坏
 
 - 例子：
-    ```javascript
-    get discountTotal(){
-      return this._discountTotal;
+  ```javascript
+  class ProductPlan{
+    constructor(num){
+      this._product = num;
     }
-    set discount(number){
-      const old = this._discount;
-      this._discount = number;
-      this._discountTotal += old - number;
+    get product(){
+      return this._product;
     }
-    ```
-    ```javascript
-    get discountTotal(){
-      return this._baseTotal - this._discount;
+    applyAdjustment(num){
+      this._accumulator.push(num);
+      this._product += num;
     }
-		get discount(){
-		  return this._discount;
-		}
-    set discount(number){
-      this._discount = number;
+    showProductList(){
+      console.info(this._accumulator);
     }
-    ```
+  }
+  ```
+  ```javascript
+  class Product{
+    constructor(num){
+      this._initialProduct = num;
+      this._accumulator = [];
+    }
+    get productTotal(){
+      return this._initialProduct + this.productCalculator;
+    }
+    get productCalculator(){
+      return this._accumulator.reduce((sum, cur) => sum + cur, 0);
+    }
+    applyAdjustment(num){
+      this._accumulator.push(num);
+    }
+    showProductList(){
+      console.info(this._accumulator);
+    }
+  }
+  ```
     
 ### 9.4 将引用对象改为值对象
 
@@ -933,21 +1053,74 @@
 - 场景：如果不需要改变值的引用关系，每个值是不可变的
 
 - 例子：
-    ```javascript
-    class Product{
-      applyDiscount(arg){
-        this._price -= arg;
-      }
+  ```javascript
+  class Person{
+    constructor(){
+      this._telephoneNum = new TelephoneNumber(); 
     }
-    ```
-    ```javascript
-    class Product{
-      applyDiscount(arg){
-        this._price = new Money(this._price.amount - arg, this._price.currency);
-      }
+    get officeAreaCode(){
+      return this._telephoneNum.areaCode;
     }
-    ```
-    
+    set officeAreaCode(code){
+      this._telephoneNum.areaCode = code;
+    }
+    get officeNumber(){
+      return this._telephoneNum.number;
+    }
+    set officeNumber(number){
+      this._telephoneNum.number = number;
+    }
+  }
+  class TelephoneNumber{
+    get areaCode(){
+      return this._areaCode; 
+    }
+    set areaCode(code){
+      this._areaCode = code; 
+    }
+    get number(){
+      return this._number; 
+    }
+    set number(number){
+      this._number = number; 
+    }
+  }
+  ```
+  ```javascript
+  class Person{
+    get officeAreaCode(){
+      return this._telephoneNum.areaCode;
+    }
+    set officeAreaCode(code){
+      this._telephoneNum = new TelephoneNumber(code, this.officeNumber);
+    }
+    get officeNumber(){
+      return this._telephoneNum.number;
+    }
+    set officeNumber(number){
+      this._telephoneNum = new TelephoneNumber(this.officeAreaCode, number);
+    }
+  }
+  class TelephoneNumber{
+    constructor(areCode, number){
+      this._areaCode = areaCode;
+      this._number = number;
+    }
+    get areaCode(){
+      return this._areaCode; 
+    }
+    set areaCode(code){
+      this._areaCode = code; 
+    }
+    get number(){
+      return this._number; 
+    }
+    set number(number){
+      this._number = number; 
+    }
+  }
+  ```
+
 ### 9.5 将值对象改为引用对象
 
 - 目的：保持数据共享
@@ -955,12 +1128,70 @@
 - 场景：如果数据结构中包含多个记录，而这些记录都有关联到同一个逻辑的数据结构，例如一个数据的改动，需要共享到整个数据集
 
 - 例子：
-    ```javascript
-    let customer = new Customer(customerData);
-    ```
-    ```javascript
-    let customer = customerRepository.get(customerData, id);
-    ```
+  ```javascript
+  class Customer{
+    constructor(id){
+      this._id = id;
+    }
+    get id(){
+      return this._id;
+    }
+  }
+  class Order{
+    constructor(data){
+      this._number = data.number;
+      this._customer = new Customer(data.customer);
+    }
+    get customer(){
+      return this._customer;
+    }
+  }
+  const order = new Order({
+    number: 100,
+    customer: '001'
+  });
+  ```
+  
+  ```javascript
+  class Customer{
+    constructor(id){
+      this._id = id;
+    }
+    get id(){
+      return this._id;
+    }
+  }
+  class Order{
+    constructor(data){
+      this._number = data.number;
+      this._customer = repo.registerCustomer(data.customer);
+    }
+    get customer(){
+      return this._customer;
+    }
+  }
+  const repo = {
+    repoData: {
+        customers: new Map()
+    },
+    registerCustomer(id){
+      if(!this.repoData.customers.has(id)){
+        this.repoData.customers.set(id, new Customer(id));
+      }
+      return this.repoData.customers.get(id);
+    }
+  }
+  new Order({
+    number: 100,
+    customer: '001'
+  });
+  console.info(repo.repoData.customers.get('001'));
+  new Order({
+    number: 100,
+    customer: '002'
+  });
+  console.info(repo.repoData.customers.get('002'));
+  ```
     
 ## 10 简化条件逻辑
 
@@ -971,24 +1202,31 @@
 - 场景：当检查处理逻辑复杂时
 
 - 例子：
-	```javascript
-	if(!date.isBefore(plan.summerStart) && !date.isAfter(plan.summerEnd)){
-		charge = quantity * plan.summerRate;
-	}else{
-		charge = quantity * plan.regularRate + plan.regularServiceCharge;
-	}
-	```
-	```javascript
-	const isSummer = !date.isBefore(plan.summerStart) && !date.isAfter(plan.summerEnd);
-	function summerCharge(){
-		return quantity * plan.summerRate;
-	}
-	function regularCharge(){
-		return quantity * plan.regularRate + plan.regularServiceCharge;
-	}
-	
-	charge = isSummer() ? summerCharge() : regularCharge();
-	```
+  ```javascript
+  function demoWrapper(date, plan, quantity){
+    let charge;
+    if(!date.isBefore(plan.summerStart) && !date.isAfter(plan.summerEnd)){
+      charge = quantity * plan.summerRate;
+    }else{
+      charge = quantity * plan.regularRate + plan.regularServiceCharge;
+    }
+    return charge;
+  }
+  ```
+  ```javascript
+  function demoWrapper(date, plan, quantity){
+    function isSummer(){
+      return !date.isBefore(plan.summerStart) && !date.isAfter(plan.summerEnd);
+    }
+    function summerCharge(){
+      return quantity * plan.summerRate;
+    }
+    function regularCharge(){
+      return quantity * plan.regularRate + plan.regularServiceCharge;
+    }
+    return isSummer() ? summerCharge() : regularCharge();
+  }
+  ```
 	
 ### 10.2 合并条件表达式
 
@@ -997,17 +1235,21 @@
 - 场景：当检查条件各不相同，最终行为一致时
 
 - 例子：
-	```javascript
-	if(age < 18) return 'younger';
-	if(experience < 5) return 'younger';
-	if(!isPassTest) return 'younger';
-	```
-	```javascript
-	if(isYounger()) return 'younger';
-	function isYounger(){
-		return age<18 || experience < 5 || !isPassTest;
-	}
-	```
+  ```javascript
+  function demoWrapper(age, experience, isPassTest){
+    if(age < 18) return 'younger';
+    if(experience < 5) return 'younger';
+    if(!isPassTest) return 'younger';
+  }
+  ```
+  ```javascript
+  function demoWrapper(age, experience, isPassTest){
+    if(isYounger(age, experience, isPassTest)) return 'younger';
+    function isYounger(age, experience, isPassTest){
+      return age<18 || experience < 5 || !isPassTest;
+    }
+  }
+  ```
 
 ### 10.3 卫语句取代嵌套条件表达式
 
@@ -1016,33 +1258,56 @@
 - 场景：当出现需要单独检查某个特定条件时
 
 - 例子：
-	```javascript
-	function getPayment(){
-		let result;
-		if(isRead){
-			result = deadAmount();
-		}else{
-			if(isSeparated){
-				result = separatedAmount();
-			}else{
-				if(isRetired){
-					result = retiredAmount();
-				}else{
-					result = normalAmount();
-				}
-			}
-		}
-	}
-	```
-	```javascript
-	function getPayment(){
-		if(isRead) return deadAmount();
-		if(isSeparated) return separatedAmount();
-		if(isRetired) return retiredAmount();
-		
-		return normalAmount();
-	}
-	```
+  ```javascript
+  function getPayment(isRead, isSeparated, isRetired){
+    let result;
+    if(isRead){
+      result = deadAmount();
+    }else{
+      if(isSeparated){
+        result = separatedAmount();
+      }else{
+        if(isRetired){
+          result = retiredAmount();
+        }else{
+          result = normalAmount();
+        }
+      }
+    }
+  }
+  function deadAmount() {
+    return 'deadAmount';
+  }
+  function separatedAmount() {
+    return 'separatedAmount';
+  }
+  function retiredAmount() {
+    return 'retiredAmount';
+  }
+  function normalAmount() {
+    return 'normalAmount';
+  }
+  ```
+  ```javascript
+  function getPayment(isRead, isSeparated, isRetired){
+    if(isRead) return deadAmount();
+    if(isSeparated) return separatedAmount();
+    if(isRetired) return retiredAmount();
+    return normalAmount();
+  }
+  function deadAmount() {
+    return 'deadAmount';
+  }
+  function separatedAmount() {
+    return 'separatedAmount';
+  }
+  function retiredAmount() {
+    return 'retiredAmount';
+  }
+  function normalAmount() {
+    return 'normalAmount';
+  }
+  ```
 
 ### 10.4 以多态取代条件表达式
 
@@ -1051,28 +1316,34 @@
 - 场景：当多个逻辑处理情况
 
 - 例子：
-	```javascript
-	switch(bird.type){
-		case 'EuropeanSwallow':
-			return 'EuropeanSwallow';
-		case 'AfricanSwallow':
-			return 'AfricanSwallow';
-		default:
-			return 'unknown';
-	}
-	```
-	```javascript
-	class EuropeanSwallow{
-		get name(){
-			return 'EuropeanSwallow';
-		}
-	}
-	class AfricanSwallow{
-		get name(){
-			return 'AfricanSwallow';
-		}
-	}
-	```
+  ```javascript
+  function getBird(){
+    return {
+      type: 'EuropeanSwallow'
+    }
+  }
+  const bird = getBird();
+  switch(bird.type){
+    case 'EuropeanSwallow':
+      return 'EuropeanSwallow';
+    case 'AfricanSwallow':
+      return 'AfricanSwallow';
+    default:
+      return 'unknown';
+  }
+  ```
+  ```javascript
+  class EuropeanSwallow{
+    get name(){
+      return 'EuropeanSwallow';
+    }
+  }
+  class AfricanSwallow{
+    get name(){
+      return 'AfricanSwallow';
+    }
+  }
+  ```
 
 ### 10.5 引入特例
 
@@ -1081,35 +1352,43 @@
 - 场景：如果某部分逻辑都在检查某个特殊值，并且处理的逻辑也都相同
 
 - 例子：
-	```javascript
-	if(customer === 'unknown'){
-		customerName = 'occupant';
-	}
-	```
-	```javascript
-	class UnknownCustomer{
-		get name(){
-			return 'occupant';
-		}
-	}
-	```
+  ```javascript
+  let customer = getCustomer();
+  if(customer === 'unknown'){
+    customerName = 'occupant';
+  }
+  function getCustomer(){ return 'normal'; }
+  ```
+  ```javascript
+  class UnknownCustomer{
+    get name(){
+      return 'occupant';
+    }
+  }
+  ```
 	
 ### 10.6 引入断言
 
 - 目的：保障传入值是可预测的，预习发现测试的BUG
 
 - 例子：
-	```javascript
-	if(this.discountRate){
-		base = base - this.discountRate * base;
-	}
-	```
-	```javascript
-	asset(this.discountRate>0);
-	if(this.discountRate){
-		base = base - this.discountRate * base;
-	}
-	```
+  ```javascript
+  const discountRate = getDiscountRate();
+  let base = 10;
+  if(discountRate){
+    base = base - discountRate * base;
+  }
+  function getDiscountRate(){ return 0.25;}
+  ```
+  ```javascript
+  let base = 10;
+  const discountRate = getDiscountRate();
+  asset(discountRate > 0);
+  if(discountRate){
+    base = base - discountRate * base;
+  }
+  function getDiscountRate(){ return 0.25;}
+  ```
 
 ## 11 重构API
 
@@ -1120,23 +1399,24 @@
 - 场景：当函数中又有查询，又有命令
 
 - 例子：
-	```javascript
-	function getTotalOutStandingAndSendBill(person){
-		const result = customer.invoice.reduce((total, each)=>each.amount + total, 0);
-		sendBill();
-		return result;
-	}
-	```
-	```javascript
-	function getTotalStanding(person){
-		return customer.invoice.reduce((total, each)=>each.amount + total, 0);
-	}
-	function sendBill(){}
-	function handler(){
-		const totalOutstanding = getTotalStanding();
-		sendBill();
-	}
-	```
+  ```javascript
+  function getTotalOutStandingAndSendBill(customer){
+    const result = customer.invoice.reduce((total, cur)=> cur.amount + total, 0);
+    sendBill(result);
+    return result;
+  }
+  function sendBill(){}
+  ```
+  ```javascript
+  function getTotalStanding(customer){
+    return customer.invoice.reduce((total, cur)=> cur.amount + total, 0);
+  }
+  function sendBill(){}
+  function handler(){
+    const totalOutstanding = getTotalStanding();
+    sendBill(totalOutstanding);
+  }
+  ```
 
 ### 11.2 函数参数化
 
@@ -1145,41 +1425,52 @@
 - 场景：如果发现多个函数逻辑相似，只有某1-2个字面量不同
 
 - 例子：
-	```javascript
-	function tenPercentRaise(person){
-		person.salary = person.salary.multiply(1.1);
-	}
-	function fivePercentRaise(person){
-		person.salary = person.salary.multiply(0.05);
-	}
-	```
-	```javascript
-	function raise(person, factor){
-		person.salary = person.salary.multiply(factor);
-	}
-	```
+  ```javascript
+  function tenPercentRaise(person){
+    person.salary = person.salary.multiply(1.1);
+  }
+  function fivePercentRaise(person){
+    person.salary = person.salary.multiply(0.05);
+  }
+  ```
+  ```javascript
+  function raise(person, factor){
+    person.salary = person.salary.multiply(factor);
+  }
+  ```
 
 ### 11.3 移除标记参数
 
-- 目的：代码更清晰，减少函数的复杂度
+- 目的：代码更清晰，减少函数的复杂度。去除flag - 一般为true/false
 
 - 场景：如果参数值影响函数内部的控制流
 
 - 例子：
-	```javascript
-	function setDimension(name, value){
-		if(name === 'height'){}
-		if(name === 'width'){}
-	}
-	```
-	```javascript
-	function setHeight(value){
-		this._height = value;
-	}
-	function setWidth(value){
-		this._width = value;
-	}
-	```
+  ```javascript
+  function takeOrder(order){
+    const date = getOrderDate(order, true);
+  }
+  function takeAnotherOrder(order){
+    const date = getOrderDate(order, false);
+  }
+  function getOrderDate(order, isExpire){
+    return isExpire ? '02/01/2022' : '02/01/2023';
+  }
+  ```
+  ```javascript
+  function takeOrder(order){
+    const date = getExpireOrder(order);
+  }
+  function takeAnotherOrder(order){
+    const date = getNormalOrder(order);
+  }
+  function getExpireOrder(order){
+    return order.date + 5;
+  }
+  function getNormalOrder(order){
+    return order.date;
+  }
+  ```
 
 ### 11.4 保持对象完整性 
 
@@ -1188,13 +1479,25 @@
 - 场景：如果传入多个参数传值
 
 - 例子：
-	```javascript
-	const{low, high} = temperature;
-	if(isValidTemperature(low, high)){};
-	```
-	```javascript
-	if(isValidTemperature(temperature)){};
-	```
+  ```javascript
+  const temperature = { low: 10, high: 30 };
+  const { low, high } = temperature;
+  if(isValidTemperature(low, high)){
+    console.info('valid');
+  };
+  function isValidTemperature(low, high){
+    return low > 0 && high < 100 && high > low;
+  }
+  ```
+  ```javascript
+  const temperature = { low: 10, high: 30 };
+  if(isValidTemperature(temperature)){
+    console.info('valid');
+  };
+  function isValidTemperature({ low, high }){
+    return low > 0 && high < 100 && high > low;
+  }
+  ```
 
 ### 11.5 以查询取代参数 
 
@@ -1205,16 +1508,21 @@
 - 场景：如果传入多个参数，并且从一个参数推导出另一个参数
 
 - 例子：
-	```javascript
-	availableVacation(employee, employee.grade);
-	function availableVacation(employee, grade){}
-	```
-	```javascript
-	availableVacation(employee);
-	function availableVacation(employee){
-		const {grade} = employee;
-	}
-	```
+  ```javascript
+  const employee = {grade: 'A', name: 'John'};
+  availableVacation(employee, employee.grade);
+  function availableVacation(employee, grade){
+    console.info(grade);
+  }
+  ```
+  ```javascript
+  const employee = {grade: 'A', name: 'John'};
+  availableVacation(employee);
+  function availableVacation(employee){
+    const { grade } = employee;
+    console.info(grade);
+  }
+  ```
 
 ### 11.6 以参数取代查询
 
@@ -1225,22 +1533,35 @@
 - 场景：如果函数引用了一个全局变量，或者引用想移除的元素
 
 - 例子：
-	```javascript
-	const weather ={};
-	targetTemperature(plan);
-	
-	function targetTemperature(plan){
-		const{curTemperature} = weather;
-	}
-	```
-	```javascript
-	const weather ={};
-	targetTemperature(plan, weather);
-	
-	function targetTemperature(plan, weather){
-		const{curTemperature} = weather;
-	}
-	```
+  ```javascript
+  const weather = {curTemperature: 20, unit: 'fahrenheit'};
+  const plan = {desc: 'go swimming'};
+  targetTemperature(plan);
+  getWeatherUnit();
+  function targetTemperature(plan){
+    const { curTemperature } = weather;
+    console.info(plan.desc);
+  }
+  
+  function getWeatherUnit(){
+    return weather.unit;
+  }
+  ```
+  ```javascript
+  const weather = {curTemperature: 20, unit: 'fahrenheit'};
+  const plan = {desc: 'go swimming'};
+  targetTemperature(plan, weather);
+  getWeatherUnit(weather);
+  
+  function targetTemperature(plan, weather){
+    const { curTemperature } = weather;
+    console.info(plan.desc);
+  }
+
+  function getWeatherUnit(weather){
+    return weather.unit;
+  }
+  ```
 
 ### 11.7 移除设置函数
 
@@ -1249,17 +1570,17 @@
 - 场景：当不希望某个字段被修改时
 
 - 例子：
-	```javascript
-	class Person{
-		get id(){}
-		set id(name){}
-	}
-	```
-	```javascript
-	class Person{
-		get id(){}
-	}
-	```
+  ```javascript
+  class Person{
+    get id(){}
+    set id(name){}
+  }
+  ```
+  ```javascript
+  class Person{
+    get id(){}
+  }
+  ```
 	
 ### 11.8 以工厂函数取代构造函数
 
@@ -1268,12 +1589,14 @@
 - 场景：不存在继承关系时
 
 - 例子：
-	```javascript
-	const leadEngineer = new Employee('name','E');
-	```
-	```javascript
-	const leadEngineer = createEngineer('name');
-	```
+  ```javascript
+  const leadEngineer = new Employee('name','E');
+  class Employee{}
+  ```
+  ```javascript
+  const leadEngineer = createEngineer('name');
+  function createEngineer(){}
+  ```
 
 ### 11.9 以命令取代函数
 
@@ -1284,26 +1607,42 @@
 - 场景：当普通函数无法提供强有力灵活性
 
 - 例子：
-	```javascript
-	function score(candidate, media){
-		let result = 0;
-		let healthLevel = 0;
-	}
-	function hasPassMedicalExam(){}
-	```
-	```javascript
-	class Scorer{
-		constructor(candidate, medicalExam){
-			this._candidate = candidate;
-			this._medicalExam = medicalExam;
-		}
-		execute(){
-			let result = 0;
-			let healthLevel = 0;
-		}
-		hasPassMedicalExam(){}
-	}
-	```
+  ```javascript
+  function score(candidate, medicalExam){
+    const whiteList = ['Haven', 'Kaly'];
+    let result = 0;
+    if(medicalExam.isPass){
+      result += 10;
+    }else{
+      result -= 20;
+    }
+    if(whiteList.includes(candidate.name)){
+      result += 20;
+    }
+    return result;
+  }
+  ```
+  ```javascript
+  class Scorer{
+    constructor(candidate, medicalExam){
+      this._candidate = candidate;
+      this._medicalExam = medicalExam;
+    }
+    execute(){
+      const whiteList = ['Haven', 'Kaly'];
+      let result = 0;
+      if(this._medicalExam.isPass){
+        result += 10;
+      }else{
+        result -= 20;
+      }
+      if(whiteList.includes(this._candidate.name)){
+        result += 20;
+      }
+      return result;
+    }
+  }
+  ```
 
 ### 11.10 以函数取代命令
 
@@ -1314,31 +1653,31 @@
 - 场景：大多数情况下，只想调用一个函数，完成自己的工作，不需要函数那么复杂
 
 - 例子：
-	```javascript
-	class ChargeCalculator{
-		constructor(customer, usage){
-			this._customer = customer;
-			this._usage = usage;
-		}
-		execute(){ 
-			return this._customer.rate * this._usage;
-		}
-	}
-	```
-	```javascript
-	function charge(customer, usage){
-		return customer.rate * usage;
-	}
-	```
+  ```javascript
+  class ChargeCalculator{
+    constructor(customer, usage){
+      this._customer = customer;
+      this._usage = usage;
+    }
+    execute(){
+      return this._customer.rate * this._usage;
+    }
+  }
+  ```
+  ```javascript
+  function charge(customer, usage){
+    return customer.rate * usage;
+  }
+  ```
 
-## 12 处理继承关系 
+## 12 处理继承关系
 
 继承体系里上下调整：[函数上移](#121-函数上移)、[字段上移](#122-字段上移)、[构造函数本体上移](#123-构造函数本体上移)、[函数下移](#124-函数下移)、[字段下移](#125-字段下移)
-
+<br/>
 继承体系添加新类或者删除旧类：[移除子类](#127-移除子类)、[提取超类](#128-提取超类)、[折叠继承体系](#129-折叠继承体系)
-
+<br/>
 一个字段仅用于类型码使用：[以子类取代类型码](#126-以子类取代类型码)
-
+<br/>
 如果本来使用集成的场景变得不再适合：[以委托取代子类](#1210-以委托取代子类)、[以委托取代超类](#1211-以委托取代超类)
 
 ### 12.1 函数上移
@@ -1350,22 +1689,22 @@
 - 场景：当函数被大部分部分子类用到时
 
 - 例子：
-	```javascript
-	class Employee{}
-	class Salesman extends Employee{
-		get name(){}
-	}
-	class Engineer extends Employee{
-		get name(){}
-	}
-	```
-	```javascript
-	class Employee{
-		get name(){}
-	}
-	class Salesman extends Employee{}
-	class Engineer extends Employee{}
-	```
+  ```javascript
+  class Employee{}
+  class Salesman extends Employee{
+    get name(){}
+  }
+  class Engineer extends Employee{
+    get name(){}
+  }
+  ```
+  ```javascript
+  class Employee{
+    get name(){}
+  }
+  class Salesman extends Employee{}
+  class Engineer extends Employee{}
+  ```
 
 ### 12.2 字段上移
 [移构造函数本体上移](#123-构造函数本体上移)
@@ -1377,38 +1716,38 @@
 - 场景：当多个子类有公共字段
 
 - 例子：
-	```javascript
-	class Party{}
-	class Employee extends Party{
-		constructor(id){
-			this._id = id;
-		}
-	}
-	class Salesman extends Employee{
-		constructor(id){
-			this._id = id;
-			this._name = name;
-		}
-	}
-	```
-	```javascript
-	class Party{
-		constructor(id){
-			this._id = id;
-		}
-	}
-	class Employee extends Party{
-		constructor(id){
-			super(id);
-		}
-	}
-	class Salesman extends Employee{
-		constructor(id){
-			super(id);
-			this._name = name;
-		}
-	}
-	```
+  ```javascript
+  class Party{}
+  class Employee extends Party{
+    constructor(id){
+      this._id = id;
+    }
+  }
+  class Salesman extends Employee{
+    constructor(id, name){
+      this._id = id;
+      this._name = name;
+    }
+  }
+  ```
+  ```javascript
+  class Party{
+    constructor(id){
+      this._id = id;
+    }
+  }
+  class Employee extends Party{
+    constructor(id){
+      super(id);
+    }
+  }
+  class Salesman extends Employee{
+    constructor(id, name){
+      super(id);
+      this._name = name;
+    }
+  }
+  ```
 
 ### 12.4 函数下移
 
@@ -1443,28 +1782,28 @@
 - 场景：当字段被小部分子类用到时
 
 - 例子：
-	```javascript
-	class Employee{
-		constructor(quote){
-			this._quote = quote;
-		}
-	}
-	class Salesman extends Employee{
-		constructor(quote){
-			super(quote);
-		}
-	}
-	class Engineer extends Employee{}
-	```
-	```javascript
-	class Employee{}
-	class Salesman extends Employee{
-		constructor(quote){
-			this._quote = quote;
-		}
-	}
-	class Engineer extends Employee{}
-	```
+  ```javascript
+  class Employee{
+    constructor(quote){
+      this._quote = quote;
+    }
+  }
+  class Salesman extends Employee{
+    constructor(quote){
+      super(quote);
+    }
+  }
+  class Engineer extends Employee{}
+  ```
+  ```javascript
+  class Employee{}
+  class Salesman extends Employee{
+    constructor(quote){
+      this._quote = quote;
+    }
+  }
+  class Engineer extends Employee{}
+  ```
 
 ### 12.6 以子类取代类型码
 
@@ -1475,22 +1814,25 @@
 - 场景：当不同的状态码表现不同的行为时
 
 - 例子：
-	```javascript
-	function createEmployee(name, type){
-		return new Employee(name, type);
-	}
-	```
-	```javascript
-	function createEmployee(name, type){
-		const employeeTypes = (name) =>{
-			return{
-				'engineer': new Engineer(name),
-				'salesman': new Salesman(name)
-			}
-		}
-		return employeeTypes(name)[type];
-	}	
-	```
+  ```javascript
+  function createEmployee(name, type){
+    return new Employee(name, type);
+  }
+  class Engineer{}
+  ```
+  ```javascript
+  function createEmployee(name, type){
+    const employeeTypes = (name) =>{
+      return{
+        engineer: new Engineer(name),
+        salesman: new Salesman(name)
+      }
+    }
+    return employeeTypes(name)[type];
+  }
+  class Engineer{}
+  class Salesman{}
+  ```
 
 ### 12.7 移除子类
 
@@ -1501,33 +1843,33 @@
 - 场景：当子类的用处太少时，当子类简单
 
 - 例子：
-	```javascript
-	class Person{
-		get genderCode(){
-			return 'X';
-		}
-	}
-	class Male extends Person{
-		get genderCode(){
-			return 'M';
-		}
-	}
-	class Female extends Person {
-		get genderCode(){
-			return 'F';
-		}
-	}
-	```
-	```javascript
-	class Person{
-		constructor(genderCode){
-			this._genderCode = genderCode;
-		}
-		get genderCode(){
-			return this._genderCode;
-		}
-	}
-	```
+  ```javascript
+  class Person{
+    get genderCode(){
+      return 'X';
+    }
+  }
+  class Male extends Person{
+    get genderCode(){
+      return 'M';
+    }
+  }
+  class Female extends Person {
+    get genderCode(){
+      return 'F';
+    }
+  }
+  ```
+  ```javascript
+  class Person{
+    constructor(genderCode){
+      this._genderCode = genderCode;
+    }
+    get genderCode(){
+      return this._genderCode;
+    }
+  }
+  ```
 
 ### 12.8 提取超类
 
@@ -1536,29 +1878,29 @@
 - 场景：当多个子类的方法基本一致时
 
 - 例子：
-	```javascript
-	class Department{
-		get totalAnnualCost(){}
-		get name(){}
-	}
-	class Employee{
-		get annualCost(){}
-		get name(){}
-		get id(){}
-	}
-	```
-	```javascript
-	class Party{
-		get totalAnnualCost(){}
-		get name(){}
-	}
-	class Department extends Party{
-		get primaryCost(){}
-	}
-	class Employee extends Party{
-		get id(){}
-	}
-	```
+  ```javascript
+  class Department{
+    get totalAnnualCost(){}
+    get name(){}
+  }
+  class Employee{
+    get annualCost(){}
+    get name(){}
+    get id(){}
+  }
+  ```
+  ```javascript
+  class Party{
+    get totalAnnualCost(){}
+    get name(){}
+  }
+  class Department extends Party{
+    get primaryCost(){}
+  }
+  class Employee extends Party{
+    get id(){}
+  }
+  ```
 
 ### 12.9 折叠继承体系
 
@@ -1567,13 +1909,17 @@
 - 场景：当超类与子类没有多大差别
 
 - 例子：
-	```javascript
-	class Employee{}
-	class Sales extends Employee{}
-	```
-	```javascript
-	class Employee{}
-	```
+  ```javascript
+  class Employee{
+    getSalary(){} 
+  }
+  class Sales extends Employee{}
+  ```
+  ```javascript
+  class Employee{
+    getSalary(){}
+  }
+  ```
 
 ###  12.10 以委托取代子类
 
@@ -1582,40 +1928,40 @@
 - 场景：当子类可能存在多种类型上的变化
 
 - 例子
-	```javascript
-	class Booking{
-		constructor(show, date){
-			this._show = show;
-			this._date = date;
-		}
-	}
-	
-	class PremiumBooking extends Booking{
-		constructor(show, date, extras){
-			super(show, date);
-			this._extras = extras;
-		}
-	}
-	```
-	```javascript
-	class Booking{
-		constructor(show, date){
-			this._show = show;
-			this._date = date;
-			this._premium = null;
-		}
-		bePremium(extras){
-			this._premium = new PremiumBookingDelegate(this, extras);
-		}
-	}
-	
-	class PremiumBookingDelegate{
-		constructor(root, extras){
-			this._root = root;
-			this._extras = extras;
-		}
-	}
-	```
+  ```javascript
+  class Booking{
+    constructor(show, date){
+      this._show = show;
+      this._date = date;
+    }
+  }
+
+  class PremiumBooking extends Booking{
+    constructor(show, date, extras){
+      super(show, date);
+      this._extras = extras;
+    }
+  }
+  ```
+  ```javascript
+  class Booking{
+    constructor(show, date){
+      this._show = show;
+      this._date = date;
+      this._premium = null;
+    }
+    bePremium(extras){
+      this._premium = new PremiumBookingDelegate(this, extras);
+    }
+  }
+
+  class PremiumBookingDelegate{
+    constructor(root, extras){
+      this._root = root;
+      this._extras = extras;
+    }
+  }
+  ```
 
 ### 12.11 以委托取代超类
 
@@ -1624,18 +1970,19 @@
 - 场景：当超类的部分方法不适用于子类，不清晰的继承关系
 
 - 例子：
-	``` javascript
-	class List{}
-	class Stack extends List{}
-	```
-	```javascript
-	class List{}
-	class Stack{
-		constructor(){
-			this._list = new List();
-		}
-	}
-	```
-    > 超类的所有方法都适用于子类，子类的所有实例都是超类的实例 => 使用继承
-  
-    > 如果发现继承有问题（扩展困难），再使用[以委托取代超类](#1211-以委托取代超类)
+  ``` javascript
+  class List{}
+  class Stack extends List{}
+  ```
+  ```javascript
+  class List{}
+  class Stack{
+    constructor(){
+      this._list = new List();
+    }
+  }
+  ```
+
+> 超类的所有方法都适用于子类，子类的所有实例都是超类的实例 => 使用继承
+
+> 如果发现继承有问题（扩展困难），再使用[以委托取代超类](#1211-以委托取代超类)
